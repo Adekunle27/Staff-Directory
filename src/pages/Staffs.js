@@ -13,7 +13,7 @@ const Staffs = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'user'));
+        const querySnapshot = await getDocs(collection(db, 'users'));
         const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setUsers(data);
       } catch (error) {

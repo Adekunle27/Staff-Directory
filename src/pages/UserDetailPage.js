@@ -14,7 +14,7 @@ const UserDetailPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userDoc = await getDoc(doc(db, 'user', id));
+        const userDoc = await getDoc(doc(db, 'users', id));
         if (userDoc.exists()) {
           const userData = { id: userDoc.id, ...userDoc.data() };
           setUser(userData);
@@ -31,7 +31,7 @@ const UserDetailPage = () => {
 
     const fetchRelatedUsers = async (faculty) => {
       try {
-        const q = query(collection(db, 'user'), where('faculty', '==', faculty));
+        const q = query(collection(db, 'users'), where('faculty', '==', faculty));
         const querySnapshot = await getDocs(q);
         const users = [];
         querySnapshot.forEach((doc) => {
