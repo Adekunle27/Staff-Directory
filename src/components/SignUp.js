@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 
 const SignUp = () => {
@@ -8,11 +8,13 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); 
     try {
       await signup(email, password, { name });
       navigate('/profile');
@@ -20,6 +22,8 @@ const SignUp = () => {
     } catch (error) {
       setError('Failed to sign up. Please check your details and try again.');
       console.error('Error signing up:', error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -49,7 +53,9 @@ const SignUp = () => {
           placeholder="Password" 
           required 
         />
-        <Button type="submit">Sign Up</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? <Loader className="loader" /> : 'Sign Up'}
+        </Button>
         <Footer>
           <Text>Already have an account? <LoginLink href="/login">Login</LoginLink></Text>
         </Footer>
@@ -128,14 +134,51 @@ const Button = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     background-color: #e6a700;
   }
 
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
   @media (max-width: 600px) {
     padding: 0.5rem;
     font-size: 0.875rem;
+  }
+`;
+
+const spin = keyframes`
+  100% {
+    transform: rotate(1turn);
+  }
+`;
+
+const Loader = styled.div`
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  animation: ${spin} 4s infinite;
+
+  &::before,
+  &::after {    
+    content: "";
+    grid-area: 1/1;
+    border: 8px solid;
+    border-radius: 50%;
+    border-color: red red #0000 #0000;
+    mix-blend-mode: darken;
+    animation: ${spin} 1s infinite linear;
+  }
+
+  &::after {
+    border-color: #0000 #0000 blue blue;
+    animation-direction: reverse;
   }
 `;
 
@@ -159,6 +202,4 @@ const LoginLink = styled.a`
     text-decoration: underline;
   }
 `;
-
-
 

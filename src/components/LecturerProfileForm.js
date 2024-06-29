@@ -44,10 +44,16 @@
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 //     try {
+//       const updatedData = {
+//         ...formData,
+//         status: 'pending',
+//         links: formData.links.split(',').map(link => link.trim()), // Convert links to an array
+//         publications: formData.publications.split('\n').map(pub => pub.trim()), // Ensure each publication is on a new line
+//       };
 //       if (existingData) {
-//         await updateDoc(doc(db, 'users', currentUser.uid), { ...formData, status: 'pending' });
+//         await updateDoc(doc(db, 'users', currentUser.uid), updatedData);
 //       } else {
-//         await setDoc(doc(db, 'users', currentUser.uid), { ...formData, status: 'pending' });
+//         await setDoc(doc(db, 'users', currentUser.uid), updatedData);
 //       }
 //       alert('Profile submitted for approval');
 //       navigate('/profile');
@@ -56,6 +62,7 @@
 //       alert('There was an error submitting your profile. Please try again.');
 //     }
 //   };
+  
 
 //   const handleDelete = async () => {
 //     try {
@@ -90,7 +97,7 @@
 //           </Select>
 //           <Input type="text" name="qualifications" value={formData.qualifications} placeholder="Your Qualifications" onChange={handleInputChange} required />
 //           <Textarea name="bio" value={formData.bio} onChange={handleInputChange} placeholder="Bio"></Textarea>
-//           <Textarea name="publications" value={formData.publications} onChange={handleInputChange} placeholder="Publications"></Textarea>
+//           <Textarea name="publications" value={formData.publications} onChange={handleInputChange} placeholder="Publications (separate each publication with a new line)"></Textarea>
 //           <Textarea name="links" value={formData.links} onChange={handleInputChange} placeholder="Links (comma-separated)"></Textarea>
 //           <Button type="submit">Submit</Button>
 //           {existingData && <Button type="button" onClick={handleDelete}>Delete Profile</Button>}
@@ -121,10 +128,6 @@
 //   padding: 2rem;
 //   border-radius: 8px;
 //   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-//   @media (max-width: 767px) {
-//     padding: 1rem;
-//   }
 // `;
 
 // const ProfileImage = styled.img`
@@ -143,10 +146,6 @@
 // const Title = styled.h2`
 //   margin-bottom: 1rem;
 //   color: #333;
-
-//   @media (max-width: 767px) {
-//     font-size: 1.5rem;
-//   }
 // `;
 
 // const Input = styled.input`
@@ -156,11 +155,6 @@
 //   border: 1px solid #ddd;
 //   border-radius: 4px;
 //   font-size: 1rem;
-
-//   @media (max-width: 767px) {
-//     font-size: 0.875rem;
-//     padding: 0.5rem;
-//   }
 // `;
 
 // const Select = styled.select`
@@ -170,11 +164,6 @@
 //   border: 1px solid #ddd;
 //   border-radius: 4px;
 //   font-size: 1rem;
-
-//   @media (max-width: 767px) {
-//     font-size: 0.875rem;
-//     padding: 0.5rem;
-//   }
 // `;
 
 // const Textarea = styled.textarea`
@@ -186,11 +175,6 @@
 //   font-size: 1rem;
 //   height: 8rem;
 //   resize: vertical;
-
-//   @media (max-width: 767px) {
-//     font-size: 0.875rem;
-//     padding: 0.5rem;
-//   }
 // `;
 
 // const Button = styled.button`
@@ -206,11 +190,6 @@
 
 //   &:hover {
 //     background-color: #0056b3;
-//   }
-
-//   @media (max-width: 767px) {
-//     font-size: 0.875rem;
-//     padding: 0.5rem;
 //   }
 // `;
 
@@ -241,7 +220,11 @@ const LecturerProfileForm = ({ existingData }) => {
 
   useEffect(() => {
     if (existingData) {
-      setFormData(existingData);
+      setFormData({
+        ...existingData,
+        publications: Array.isArray(existingData.publications) ? existingData.publications.join('\n') : existingData.publications,
+        links: Array.isArray(existingData.links) ? existingData.links.join(', ') : existingData.links,
+      });
     }
   }, [existingData]);
 
@@ -257,28 +240,6 @@ const LecturerProfileForm = ({ existingData }) => {
     const photoURL = await getDownloadURL(storageRef);
     setFormData({ ...formData, image: photoURL });
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const updatedData = {
-  //       ...formData,
-  //       status: 'pending',
-  //       links: formData.links.split(',').map(link => link.trim()), // Convert links to an array
-  //       publications: formData.publications.split('\n').map(pub => pub.trim()), // Ensure each publication is on a new line
-  //     };
-  //     if (existingData) {
-  //       await updateDoc(doc(db, 'users', currentUser.uid), updatedData);
-  //     } else {
-  //       await setDoc(doc(db, 'users', currentUser.uid), updatedData);
-  //     }
-  //     alert('Profile submitted for approval');
-  //     navigate('/profile');
-  //   } catch (error) {
-  //     console.error('Error submitting profile:', error);
-  //     alert('There was an error submitting your profile. Please try again.');
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -301,7 +262,6 @@ const LecturerProfileForm = ({ existingData }) => {
       alert('There was an error submitting your profile. Please try again.');
     }
   };
-  
 
   const handleDelete = async () => {
     try {
