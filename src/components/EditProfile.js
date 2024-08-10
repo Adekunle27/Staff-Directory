@@ -1,48 +1,9 @@
-// import React, { useEffect, useState } from 'react';
-// import { db } from '../firebase';
-// import { doc, getDoc } from 'firebase/firestore';
-// import LecturerProfileForm from './LecturerProfileForm';
-// import { useAuth } from '../contexts/AuthContext';
-// import styled from 'styled-components';
-
-// const EditProfile = () => {
-//   const { currentUser } = useAuth();
-//   const [existingData, setExistingData] = useState(null);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       const docRef = doc(db, 'users', currentUser.uid);
-//       const docSnap = await getDoc(docRef);
-//       if (docSnap.exists()) {
-//         setExistingData(docSnap.data());
-//       }
-//     };
-//     fetchData();
-//   }, [currentUser]);
-
-//   return (
-//     <div>
-//       <Alignh2>Edit Your Profile</Alignh2>
-//       {existingData ? <LecturerProfileForm existingData={existingData} /> : <p>Loading...</p>}
-//     </div>
-//   );
-// };
-
-// export default EditProfile;
-
-
-// const Alignh2 = styled.h2`
-// text-align:center;
-
-// `;
-
-
-import React, { useEffect, useState } from 'react';
-import { db } from '../firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import LecturerProfileForm from './LecturerProfileForm';
-import { useAuth } from '../contexts/AuthContext';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import LecturerProfileForm from "./LecturerProfileForm";
+import { useAuth } from "../contexts/AuthContext";
+import styled from "styled-components";
 
 const EditProfile = () => {
   const { currentUser } = useAuth();
@@ -50,7 +11,7 @@ const EditProfile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const docRef = doc(db, 'users', currentUser.uid);
+      const docRef = doc(db, "users", currentUser.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setExistingData(docSnap.data());
@@ -62,7 +23,11 @@ const EditProfile = () => {
   return (
     <Container>
       <Alignh2>Edit Your Profile</Alignh2>
-      {existingData ? <LecturerProfileForm existingData={existingData} /> : <p>Loading...</p>}
+      {existingData ? (
+        <LecturerProfileForm existingData={existingData} />
+      ) : (
+        <p>Loading...</p>
+      )}
     </Container>
   );
 };
