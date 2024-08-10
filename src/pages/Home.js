@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { getDocs, collection } from "firebase/firestore";
 import { db } from "../firebase";
 import UserList from "../components/UserList";
@@ -20,6 +20,7 @@ const Home = () => {
   const [searchSubmitted, setSearchSubmitted] = useState(false);
   const [totalStaffs, setTotalStaffs] = useState(0);
   const [selectedFaculty, setSelectedFaculty] = useState("");
+  const userListRef = useRef(null); // Step 1: Create a reference for the UserList
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -55,6 +56,11 @@ const Home = () => {
     );
     setFilteredUsers(filtered);
     setSearchSubmitted(true);
+
+    // Scroll to the UserList after search
+    if (userListRef.current) {
+      userListRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleFacultyClick = (faculty) => {
@@ -64,6 +70,11 @@ const Home = () => {
     );
     setFilteredUsers(filtered);
     setSelectedFaculty(faculty);
+
+    // Scroll to the UserList after filtering by faculty
+    if (userListRef.current) {
+      userListRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -116,7 +127,9 @@ const Home = () => {
               } Found`
             : `Total number of staffs: ${totalStaffs}`}
         </FoundStaffText>
-        <UserList users={filteredUsers} />
+        <div ref={userListRef}> {/* Step 2: Attach the ref to UserList */}
+          <UserList users={filteredUsers} />
+        </div>
       </Container>
       <GoToStaff>
         Wants to see all the Lecturers? Click <a href="/staffs">Here</a> to go
@@ -158,7 +171,6 @@ const CardGrid = styled.div`
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
-    // grid-template-columns: repeat(1, 1fr);
     justify-content: center;
     align-items: center;
   }
@@ -204,3 +216,4 @@ const GoToStaff = styled.div`
 `;
 
 export default Home;
+    
