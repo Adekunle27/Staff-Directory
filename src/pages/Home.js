@@ -242,6 +242,7 @@ const FoundStaffText = styled.div`
 `;
 
 const GoToStaff = styled.div`
+  text-align: center;
   margin-top: 2rem;
   margin-bottom: 2rem;
   font-size: 1rem;
