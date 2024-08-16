@@ -16,6 +16,7 @@ const Home = () => {
   const [searchSubmitted, setSearchSubmitted] = useState(false);
   const [totalStaffs, setTotalStaffs] = useState(0);
   const [selectedFaculty, setSelectedFaculty] = useState("");
+  const userListRef = useRef(null); // Step 1: Create a reference for the UserList
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -70,6 +71,11 @@ const Home = () => {
     );
     setFilteredUsers(filtered);
     setSearchSubmitted(true);
+
+    // Scroll to the UserList after search
+    if (userListRef.current) {
+      userListRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleFacultySelect = (event) => {
@@ -124,7 +130,11 @@ const Home = () => {
               } Found`
             : `Total number of staffs: ${totalStaffs}`}
         </FoundStaffText>
-        <UserList users={filteredUsers} />
+        <div ref={userListRef}>
+          {" "}
+          {/* Step 2: Attach the ref to UserList */}
+          <UserList users={filteredUsers} />
+        </div>
       </Container>
       <GoToStaff>
         Want to see all the Lecturers? Click{" "}
