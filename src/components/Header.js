@@ -28,12 +28,12 @@ const HeaderContainer = styled.header`
 
   @media (max-width: 768px) {
     padding: 3rem 1rem;
-    height: 40vh;
+    height: 45vh;
   }
 
   @media (max-width: 600px) {
     padding: 2rem 1rem;
-    height: 40vh;
+    height: 50vh;
     margin-bottom: 4rem;
   }
 `;

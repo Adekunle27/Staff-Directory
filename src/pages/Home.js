@@ -125,17 +125,18 @@ const Home = () => {
             : `Total number of staffs: ${totalStaffs}`}
         </FoundStaffText>
         <UserList users={filteredUsers} />
+
+        <GoToStaff>
+          Want to see all the Lecturers? Click{" "}
+          <a
+            href="/staffs"
+            style={{ marginRight: "0.4rem", marginLeft: "0.4rem" }}
+          >
+            Here
+          </a>{" "}
+          to go to the staff page.
+        </GoToStaff>
       </Container>
-      <GoToStaff>
-        Want to see all the Lecturers? Click{" "}
-        <a
-          href="/staffs"
-          style={{ marginRight: "0.4rem", marginLeft: "0.4rem" }}
-        >
-          Here
-        </a>{" "}
-        to go to the staff page.
-      </GoToStaff>
     </>
   );
 };
@@ -171,7 +172,7 @@ const sliderSettings = {
     {
       breakpoint: 600,
       settings: {
-        slidesToShow: 2,
+        slidesToShow: 1,
         slidesToScroll: 1,
       },
     },
@@ -241,8 +242,6 @@ const FoundStaffText = styled.div`
 `;
 
 const GoToStaff = styled.div`
-  display: flex;
-  justify-content: center;
   margin-top: 2rem;
   margin-bottom: 2rem;
 `;
