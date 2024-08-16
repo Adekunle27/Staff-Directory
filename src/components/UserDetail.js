@@ -8,6 +8,69 @@ import { FaAtlassian } from "react-icons/fa6";
 import { FaAtom } from "react-icons/fa6";
 import { FaGraduationCap } from "react-icons/fa";
 
+import news from "../images/news.png";
+import events from "../images/events.png";
+
+const linkify = (text) => {
+  const urlPattern =
+    /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+  const wwwPattern = /\b(www\.[a-z0-9.-]+\.[a-z]{2,})/gi;
+  const domainPattern = /\b([a-z0-9.-]+\.[a-z]{2,})\b/gi;
+  const emailPattern = /(([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}))/gi;
+
+  return text.split(/(\s+)/).map((word, index) => {
+    if (urlPattern.test(word)) {
+      return (
+        <a
+          key={index}
+          href={word}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "underline", color: "#003366" }}
+        >
+          {word}
+        </a>
+      );
+    } else if (wwwPattern.test(word)) {
+      return (
+        <a
+          key={index}
+          href={`http://${word}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "underline", color: "#003366" }}
+        >
+          {word}
+        </a>
+      );
+    } else if (domainPattern.test(word)) {
+      return (
+        <a
+          key={index}
+          href={`http://${word}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "underline", color: "#003366" }}
+        >
+          {word}
+        </a>
+      );
+    } else if (emailPattern.test(word)) {
+      return (
+        <a
+          key={index}
+          href={`mailto:${word}`}
+          style={{ textDecoration: "underline", color: "#003366" }}
+        >
+          {word}
+        </a>
+      );
+    } else {
+      return word;
+    }
+  });
+};
+
 const UserDetailContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -56,8 +119,51 @@ const Topstyle = styled.div`
   }
 `;
 
+const AlignBoth = styled.div`
+  display: flex;
+  gap: 3.5em;
+`;
+
 const BottomSection = styled.div`
-  flex: 2;
+  flex: 7.5;
+  display: flex;
+  flex-direction: column;
+`;
+
+const BottomRight = styled.div`
+  flex: 2.5;
+  flex-direction: column;
+  display: flex;
+  gap: 1.5rem; /* Adds spacing between news items */
+`;
+
+const NewsItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #f3dbdb;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+`;
+
+const NewsImage = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+`;
+
+const NewsTitle = styled.h4`
+  margin: 0.5rem 0;
+  color: #003366;
+  font-size: 1rem;
+  font-weight: bold;
+`;
+
+const NewsDescription = styled.p`
+  margin: 0;
+  font-size: 0.875rem;
+  color: #333;
 `;
 
 const ProfileImage = styled.img`
@@ -88,6 +194,16 @@ const Paragraph = styled.p`
   display: flex;
   align-items: center; /* Ensures the icon and text are aligned vertically */
   line-height: 1.5;
+`;
+const ParagraphQualification = styled.p`
+  margin-top: 0;
+  display: flex;
+  align-items: center; /* Ensures the icon and text are aligned vertically */
+  line-height: 1;
+  font-style: bold;
+
+  text-decoration: underline;
+  font-size: 1.5rem;
 `;
 
 const IconWrapper = styled.span`
@@ -184,38 +300,67 @@ const UserDetail = ({ user }) => {
           </Paragraph>
         </RightSectionTop>
       </Topstyle>
-      <BottomSection>
-        <SectionTitle>My Bio</SectionTitle>
-        <Paragraph>{user.bio}</Paragraph>
-        <SectionTitle>Publications</SectionTitle>
-        <List>
-          {Array.isArray(user.publications) && user.publications.length > 0 ? (
-            user.publications.map((publication, index) => (
-              <ListItem key={index}>{publication}</ListItem>
-            ))
-          ) : (
-            <Paragraph>No publications available.</Paragraph>
-          )}
-        </List>
-        <SectionTitle>Links</SectionTitle>
-        <List>
-          {Array.isArray(user.links) && user.links.length > 0 ? (
-            user.links.map((link, index) => (
-              <ListItem key={index}>
-                <a
-                  href={link.startsWith("http") ? link : `http://${link}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {link}
-                </a>
-              </ListItem>
-            ))
-          ) : (
-            <Paragraph>No links available.</Paragraph>
-          )}
-        </List>
-      </BottomSection>
+      <AlignBoth>
+        <BottomSection>
+          <SectionTitle>My Bio</SectionTitle>
+          <Paragraph>{linkify(user.bio)} </Paragraph>
+
+          <ParagraphQualification>
+            <b>Academic Qualifications</b>: {user.qualifications}
+          </ParagraphQualification>
+          <ParagraphQualification>
+            <b>Current Research interest</b>:{" "}
+            {user.interest ? user.interest : "Plant Anatomy and Embryology."}
+          </ParagraphQualification>
+          <SectionTitle>Publications</SectionTitle>
+          <List>
+            {Array.isArray(user.publications) &&
+            user.publications.length > 0 ? (
+              user.publications.map((publication, index) => (
+                <ListItem key={index}>{linkify(publication)}</ListItem>
+              ))
+            ) : (
+              <Paragraph>No publications available.</Paragraph>
+            )}
+          </List>
+          <SectionTitle>Links</SectionTitle>
+          <List>
+            {Array.isArray(user.links) && user.links.length > 0 ? (
+              user.links.map((link, index) => (
+                <ListItem key={index}>
+                  <a
+                    href={link.startsWith("http") ? link : `http://${link}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {link}
+                  </a>
+                </ListItem>
+              ))
+            ) : (
+              <Paragraph>No links available.</Paragraph>
+            )}
+          </List>
+        </BottomSection>
+
+        <BottomRight>
+          <SectionTitle>News and Events</SectionTitle>
+          <NewsItem>
+            <NewsImage src={news} alt="News 1" />
+            <NewsTitle>VISA Grant Opening</NewsTitle>
+            <NewsDescription>
+              Brief description about the VISA grant opening event.
+            </NewsDescription>
+          </NewsItem>
+          <NewsItem>
+            <NewsImage src={events} alt="News 2" />
+            <NewsTitle>Academic Research Awards</NewsTitle>
+            <NewsDescription>
+              Brief description about the academic research awards.
+            </NewsDescription>
+          </NewsItem>
+        </BottomRight>
+      </AlignBoth>
     </UserDetailContainer>
   );
 };

@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { getDocs, collection } from "firebase/firestore";
-import { db } from "../firebase";
+import { getDocs, collection, query, where, limit } from "firebase/firestore";
+import { db } from "../firebase.js";
 import UserList from "../components/UserList";
 import Header from "../components/Header";
 import styled from "styled-components";
-import tech from "../images/technology.jpg";
-import clinical from "../images/clinical.jpg";
-import art from "../images/art.jpg";
-import science from "../images/science.jpg";
-import pharmacy from "../images/pharmacy.jpg";
-import Agric from "../images/Agric.jpg";
-import Law from "../images/law.png";
-import EDM from "../images/EDM.png";
+import SlickSlider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Home = () => {
   const [users, setUsers] = useState([]);
+  const [recentStaffs, setRecentStaffs] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [searchSubmitted, setSearchSubmitted] = useState(false);
@@ -40,7 +36,26 @@ const Home = () => {
       }
     };
 
+    const fetchRecentStaffs = async () => {
+      try {
+        const recentQuery = query(
+          collection(db, "users"),
+          where("status", "==", "approved"),
+          limit(10)
+        );
+        const recentSnapshot = await getDocs(recentQuery);
+        const recentData = recentSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setRecentStaffs(recentData);
+      } catch (error) {
+        console.error("Error fetching recent staff data:", error);
+      }
+    };
+
     fetchUsers();
+    fetchRecentStaffs();
   }, []);
 
   const handleSearch = () => {
@@ -57,54 +72,47 @@ const Home = () => {
     setSearchSubmitted(true);
   };
 
-  const handleFacultyClick = (faculty) => {
-    const filtered = users.filter(
-      (user) =>
-        user.faculty && user.faculty.toLowerCase() === faculty.toLowerCase()
-    );
-    setFilteredUsers(filtered);
+  const handleFacultySelect = (event) => {
+    const faculty = event.target.value;
     setSelectedFaculty(faculty);
+    const filtered =
+      faculty === "All"
+        ? users
+        : users.filter(
+            (user) =>
+              user.faculty &&
+              user.faculty.toLowerCase() === faculty.toLowerCase()
+          );
+    setFilteredUsers(filtered);
   };
 
   return (
     <>
-      <Header search={search} setSearch={setSearch} onSearch={handleSearch} />
+      <Header
+        search={search}
+        setSearch={setSearch}
+        onSearch={handleSearch}
+        handleFacultySelect={handleFacultySelect}
+      />
       <Container>
-        <FacultyText>Featured Faculties</FacultyText>
-        <CardGrid>
-          <Card onClick={() => handleFacultyClick("Technology")}>
-            <CardImage src={tech} alt="Technology" />
-            <CardTitle>Technology/Engineering</CardTitle>
-          </Card>
-          <Card onClick={() => handleFacultyClick("Science")}>
-            <CardImage src={science} alt="Science" />
-            <CardTitle>Science</CardTitle>
-          </Card>
-          <Card onClick={() => handleFacultyClick("Clinical Science")}>
-            <CardImage src={clinical} alt="Clinical Science" />
-            <CardTitle>Clinical Science</CardTitle>
-          </Card>
-          <Card onClick={() => handleFacultyClick("Pharmacy")}>
-            <CardImage src={pharmacy} alt="Pharmacy" />
-            <CardTitle>Pharmacy</CardTitle>
-          </Card>
-          <Card onClick={() => handleFacultyClick("Art")}>
-            <CardImage src={art} alt="Art" />
-            <CardTitle>Art</CardTitle>
-          </Card>
-          <Card onClick={() => handleFacultyClick("Agriculture")}>
-            <CardImage src={Agric} alt="Agriculture" />
-            <CardTitle>Agriculture</CardTitle>
-          </Card>
-          <Card onClick={() => handleFacultyClick("Law")}>
-            <CardImage src={Law} alt="Law" />
-            <CardTitle>Law</CardTitle>
-          </Card>
-          <Card onClick={() => handleFacultyClick("EDM")}>
-            <CardImage src={EDM} alt="EDM" />
-            <CardTitle>Environmental Designs (EDM)</CardTitle>
-          </Card>
-        </CardGrid>
+        <SectionTitle>Recently Added Staff</SectionTitle>
+        <SliderContainer>
+          <Slider {...sliderSettings}>
+            {recentStaffs.map((staff) => (
+              <StaffCard key={staff.id}>
+                <ProfileImage src={staff.image} alt={staff.name} />
+                <StaffInfo>
+                  <StaffName>{staff.name}</StaffName>
+                  <StaffFaculty> Faculty: {staff.faculty}</StaffFaculty>
+                  <StaffDepartment>
+                    {" "}
+                    Department: {staff.department}
+                  </StaffDepartment>
+                </StaffInfo>
+              </StaffCard>
+            ))}
+          </Slider>
+        </SliderContainer>
         <FoundStaffText>
           {selectedFaculty
             ? `${filteredUsers.length} Staff${
@@ -119,81 +127,117 @@ const Home = () => {
         <UserList users={filteredUsers} />
       </Container>
       <GoToStaff>
-        Wants to see all the Lecturers? Click <a href="/staffs">Here</a> to go
-        to the staff page
+        Want to see all the Lecturers? Click{" "}
+        <a
+          href="/staffs"
+          style={{ marginRight: "0.4rem", marginLeft: "0.4rem" }}
+        >
+          Here
+        </a>{" "}
+        to go to the staff page.
       </GoToStaff>
     </>
   );
 };
 
 const Container = styled.div`
-  @media (max-width: 600px) {
-    padding: 0 1rem;
+  padding: 2rem;
+`;
+
+const SectionTitle = styled.h2`
+  text-align: center;
+  margin-bottom: 2rem;
+`;
+
+const SliderContainer = styled.div`
+  margin: 0 auto;
+  max-width: 80%;
+`;
+
+const sliderSettings = {
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 5,
+  slidesToScroll: 1,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+      },
+    },
+  ],
+};
+
+const Slider = styled(SlickSlider)`
+  .slick-list {
+    overflow: hidden;
   }
-`;
-
-const FoundStaffText = styled.div`
-  text-align: center;
-  margin: 1rem 0;
-  font-size: 1.25rem;
-  font-weight: bold;
-`;
-
-const FacultyText = styled.div`
-  text-align: center;
-  margin: 1.5rem 0 2rem 0;
-  font-size: 2rem;
-  font-weight: bold;
-`;
-
-const CardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  padding: 0 10rem;
-  margin: 2rem 0;
-
-  @media (max-width: 768px) {
+  .slick-slide > div {
     display: flex;
-    flex-direction: column;
-    // grid-template-columns: repeat(1, 1fr);
     justify-content: center;
     align-items: center;
   }
 `;
 
-const Card = styled.div`
-  background-color: white;
+const StaffCard = styled.div`
+  background-color: #e7d2d2;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.2s;
+  text-align: center;
+  transition: transform 0.3s;
+  color: #003366;
 
   &:hover {
     transform: translateY(-5px);
   }
-`;
-
-const CardImage = styled.img`
-  width: 100%;
-  height: 30rem;
-  object-fit: cover;
-
-  @media (max-width: 768px) {
-    width: 400px;
-    height: 15rem;
-    object-fit: cover;
-  }
-`;
-
-const CardTitle = styled.div`
   padding: 1rem;
+  width: 90%;
+  margin: 0 0.5rem; /* Add margin to create space between cards */
+`;
+
+const ProfileImage = styled.img`
+  width: 15.5rem;
+  height: 12rem;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+`;
+
+const StaffInfo = styled.div`
+  text-align: left;
+`;
+
+const StaffName = styled.h3`
+  font-size: 1.2rem;
+  font-weight: bold;
+`;
+
+const StaffFaculty = styled.p`
+  font-size: 1rem;
+  color: #003366;
+`;
+
+const StaffDepartment = styled.p`
+  font-size: 0.9rem;
+  color: #003366;
+`;
+
+const FoundStaffText = styled.div`
+  text-align: center;
+  margin: 2rem 0;
   font-size: 1.25rem;
   font-weight: bold;
-  text-align: center;
 `;
 
 const GoToStaff = styled.div`

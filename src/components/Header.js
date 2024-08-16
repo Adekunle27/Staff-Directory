@@ -65,30 +65,40 @@ const Subheading = styled.p`
   }
 `;
 
-const SearchBox = styled.div`
+const SearchContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  align-items: center;
+  gap: 1rem;
 
   @media (max-width: 600px) {
     flex-direction: column;
-    align-items: center;
+    gap: 0.5rem;
+  }
+`;
+
+const Select = styled.select`
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+
+  @media (max-width: 600px) {
+    width: 100%;
   }
 `;
 
 const SearchInput = styled.input`
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
   border: none;
   border-radius: 4px;
+  outline: none;
   width: 300px;
 
-  @media (max-width: 768px) {
-    width: 250px;
-  }
-
   @media (max-width: 600px) {
-    width: 200px;
+    width: 100%;
   }
 `;
 
@@ -97,36 +107,48 @@ const SearchButton = styled.button`
   font-size: 1rem;
   border: none;
   border-radius: 4px;
-  background-color: #0066cc;
+  background-color: #007bff;
   color: white;
-  margin-left: 1rem;
+  cursor: pointer;
 
   &:hover {
-    background-color: #005bb5;
+    background-color: #0056b3;
   }
 
   @media (max-width: 600px) {
-    margin-left: 0;
-    margin-top: 1rem;
+    width: 100%;
   }
 `;
 
-const Header = ({ search, setSearch, onSearch }) => (
-  <HeaderContainer>
-    <Heading>Welcome to OAU Staff Directory Website</Heading>
-    <Subheading>
-      Looking for a profile? Search by name, faculty, and department.
-    </Subheading>
-    <SearchBox>
-      <SearchInput
-        type="text"
-        placeholder="Search users..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <SearchButton onClick={onSearch}>Search</SearchButton>
-    </SearchBox>
-  </HeaderContainer>
-);
+const Header = ({ search, setSearch, onSearch, handleFacultySelect }) => {
+  return (
+    <HeaderContainer>
+      <Heading>Welcome to the University Staff Directory</Heading>
+      <Subheading>
+        Search for faculty and staff by name, department, or faculty
+      </Subheading>
+      <SearchContainer>
+        <Select onChange={handleFacultySelect}>
+          <option value="All">All Faculties</option>
+          <option value="Science">Science</option>
+          <option value="Art">Arts</option>
+          <option value="Technology">Engineering</option>
+          <option value="Clinical Science">Clinical Science</option>
+          <option value="Pharmacy">Pharmacy</option>
+          <option value="EDM">Environmental Designs (EDM)</option>
+          <option value="Administration">Administration</option>
+          <option value="Social Science">Social Science</option>
+        </Select>
+        <SearchInput
+          type="text"
+          placeholder="Search..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <SearchButton onClick={onSearch}>Search</SearchButton>
+      </SearchContainer>
+    </HeaderContainer>
+  );
+};
 
 export default Header;
