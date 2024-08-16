@@ -244,6 +244,7 @@ const FoundStaffText = styled.div`
 const GoToStaff = styled.div`
   margin-top: 2rem;
   margin-bottom: 2rem;
+  font-size: 1rem;
 `;
 
 export default Home;
