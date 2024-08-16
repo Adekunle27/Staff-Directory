@@ -303,7 +303,7 @@ const UserDetail = ({ user }) => {
       <AlignBoth>
         <BottomSection>
           <SectionTitle>My Bio</SectionTitle>
-          <Paragraph>{linkify(user.bio)} </Paragraph>
+          <Paragraph>{user.bio} </Paragraph>
 
           <ParagraphQualification>
             <b>Academic Qualifications</b>: {user.qualifications}
