@@ -120,7 +120,13 @@ const SearchButton = styled.button`
   }
 `;
 
-const Header = ({ search, setSearch, onSearch, handleFacultySelect }) => {
+const Header = ({
+  search,
+  setSearch,
+  onSearch,
+  selectedSearchOption,
+  setSelectedSearchOption,
+}) => {
   return (
     <HeaderContainer>
       <Heading>Welcome to the University Staff Directory</Heading>
@@ -128,16 +134,16 @@ const Header = ({ search, setSearch, onSearch, handleFacultySelect }) => {
         Search for faculty and staff by name, department, or faculty
       </Subheading>
       <SearchContainer>
-        <Select onChange={handleFacultySelect}>
-          <option value="All">All Faculties</option>
-          <option value="Science">Science</option>
-          <option value="Art">Arts</option>
-          <option value="Technology">Engineering</option>
-          <option value="Clinical Science">Clinical Science</option>
-          <option value="Pharmacy">Pharmacy</option>
-          <option value="EDM">Environmental Designs (EDM)</option>
-          <option value="Administration">Administration</option>
-          <option value="Social Science">Social Science</option>
+        <Select
+          onChange={(e) => setSelectedSearchOption(e.target.value)}
+          value={selectedSearchOption}
+        >
+          <option value="All">All</option>
+          <option value="Name">Name</option>
+          <option value="Email">Email</option>
+          <option value="Phone number">Phone number</option>
+          <option value="Rank">Rank</option>
+          <option value="Faculty">Faculty</option>
         </Select>
         <SearchInput
           type="text"

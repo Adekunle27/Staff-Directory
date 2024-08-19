@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getDocs, collection, query, where, limit } from "firebase/firestore";
 import { db } from "../firebase.js";
+import { useNavigate } from "react-router-dom";
 import UserList from "../components/UserList";
 import Header from "../components/Header";
 import styled from "styled-components";
@@ -15,7 +16,9 @@ const Home = () => {
   const [search, setSearch] = useState("");
   const [searchSubmitted, setSearchSubmitted] = useState(false);
   const [totalStaffs, setTotalStaffs] = useState(0);
-  const [selectedFaculty, setSelectedFaculty] = useState("");
+  const [selectedSearchOption, setSelectedSearchOption] = useState("All");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -59,31 +62,60 @@ const Home = () => {
   }, []);
 
   const handleSearch = () => {
-    const filtered = users.filter(
-      (user) =>
-        (user.name && user.name.toLowerCase().includes(search.toLowerCase())) ||
-        (user.faculty &&
-          user.faculty.toLowerCase().includes(search.toLowerCase())) ||
-        (user.department &&
-          user.department.toLowerCase().includes(search.toLowerCase())) ||
-        (user.bio && user.bio.toLowerCase().includes(search.toLowerCase()))
-    );
-    setFilteredUsers(filtered);
-    setSearchSubmitted(true);
-  };
+    let filtered;
+    const normalizePhoneNumber = (phone) => phone?.replace(/\D/g, ""); // Remove all non-numeric characters
 
-  const handleFacultySelect = (event) => {
-    const faculty = event.target.value;
-    setSelectedFaculty(faculty);
-    const filtered =
-      faculty === "All"
-        ? users
-        : users.filter(
-            (user) =>
-              user.faculty &&
-              user.faculty.toLowerCase() === faculty.toLowerCase()
-          );
-    setFilteredUsers(filtered);
+    switch (selectedSearchOption) {
+      case "Name":
+        filtered = users.filter((user) =>
+          user.name?.toLowerCase().includes(search.toLowerCase())
+        );
+        break;
+      case "Email":
+        filtered = users.filter((user) =>
+          user.email?.toLowerCase().includes(search.toLowerCase())
+        );
+        break;
+      case "Phone number":
+        const normalizedSearch = normalizePhoneNumber(search);
+        console.log("Normalized Search:", normalizedSearch); // Debugging log
+
+        filtered = users.filter((user) => {
+          const normalizedPhone = normalizePhoneNumber(user?.phone || ""); // Update to use `phone` field
+          console.log("User Phone:", normalizedPhone); // Debugging log
+          return normalizedPhone?.includes(normalizedSearch);
+        });
+        break;
+      case "Rank":
+        filtered = users.filter((user) =>
+          user.rank?.toLowerCase().includes(search.toLowerCase())
+        );
+        break;
+      case "Faculty":
+        filtered = users.filter((user) =>
+          user.faculty?.toLowerCase().includes(search.toLowerCase())
+        );
+        break;
+      case "All":
+      default:
+        const normalizedSearchForAll = normalizePhoneNumber(search);
+        filtered = users.filter(
+          (user) =>
+            user.name?.toLowerCase().includes(search.toLowerCase()) ||
+            user.email?.toLowerCase().includes(search.toLowerCase()) ||
+            normalizePhoneNumber(user?.phone || "")?.includes(
+              normalizedSearchForAll
+            ) ||
+            user.rank?.toLowerCase().includes(search.toLowerCase()) ||
+            user.faculty?.toLowerCase().includes(search.toLowerCase())
+        );
+        break;
+    }
+
+    setSearchSubmitted(true);
+
+    // Redirect to Foundstaff page with found users
+    navigate("/foundstaff", { state: { foundUsers: filtered } });
   };
 
   return (
@@ -92,7 +124,8 @@ const Home = () => {
         search={search}
         setSearch={setSearch}
         onSearch={handleSearch}
-        handleFacultySelect={handleFacultySelect}
+        selectedSearchOption={selectedSearchOption}
+        setSelectedSearchOption={setSelectedSearchOption}
       />
       <Container>
         <SectionTitle>Recently Added Staff</SectionTitle>
@@ -105,7 +138,6 @@ const Home = () => {
                   <StaffName>{staff.name}</StaffName>
                   <StaffFaculty> Faculty: {staff.faculty}</StaffFaculty>
                   <StaffDepartment>
-                    {" "}
                     Department: {staff.department}
                   </StaffDepartment>
                 </StaffInfo>
@@ -114,16 +146,13 @@ const Home = () => {
           </Slider>
         </SliderContainer>
         <FoundStaffText>
-          {selectedFaculty
-            ? `${filteredUsers.length} Staff${
-                filteredUsers.length !== 1 ? "s" : ""
-              } Found in Faculty of ${selectedFaculty}`
-            : searchSubmitted
+          {searchSubmitted
             ? `${filteredUsers.length} Staff${
                 filteredUsers.length !== 1 ? "s" : ""
               } Found`
             : `Total number of staffs: ${totalStaffs}`}
         </FoundStaffText>
+
         <UserList users={filteredUsers} />
 
         <GoToStaff>
@@ -204,7 +233,7 @@ const StaffCard = styled.div`
   }
   padding: 1rem;
   width: 90%;
-  margin: 0 0.5rem; /* Add margin to create space between cards */
+  margin: 0 0.5rem;
 `;
 
 const ProfileImage = styled.img`
