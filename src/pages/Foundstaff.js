@@ -1,33 +1,3 @@
-// import React from "react";
-// import UserList from "../components/UserList";
-// import { useLocation } from "react-router-dom";
-// import styled from "styled-components";
-
-// const Foundstaff = () => {
-//   const location = useLocation();
-//   const { foundUsers } = location.state || { foundUsers: [] };
-
-//   return (
-//     <Container>
-//       <SectionTitle>
-//         {foundUsers.length} Staff{foundUsers.length !== 1 ? "s" : ""} Found
-//       </SectionTitle>
-//       <UserList users={foundUsers} />
-//     </Container>
-//   );
-// };
-
-// const Container = styled.div`
-//   padding: 2rem;
-// `;
-
-// const SectionTitle = styled.h2`
-//   text-align: center;
-//   margin-bottom: 2rem;
-// `;
-
-// export default Foundstaff;
-
 import React from "react";
 import UserList from "../components/UserList";
 import { useLocation } from "react-router-dom";

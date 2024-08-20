@@ -1,14 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import UserDetail from '../components/UserDetail';
-import { db } from '../firebase';
-import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import UserDetail from "../components/UserDetail";
+import { db } from "../firebase";
+import {
+  collection,
+  doc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import styled from "styled-components";
+import Footer from "../components/Footer";
 
 const UserDetailPageContainer = styled.div`
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 4rem auto;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 4rem auto;
   @media (max-width: 768px) {
     padding: 1rem;
   }
@@ -23,7 +31,7 @@ const UserDetailPage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userDoc = await getDoc(doc(db, 'users', id));
+        const userDoc = await getDoc(doc(db, "users", id));
         if (userDoc.exists()) {
           const userData = { id: userDoc.id, ...userDoc.data() };
           setUser(userData);
@@ -32,7 +40,7 @@ const UserDetailPage = () => {
           setUser(null);
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error("Error fetching user data:", error);
       } finally {
         setLoading(false);
       }
@@ -40,7 +48,10 @@ const UserDetailPage = () => {
 
     const fetchRelatedUsers = async (faculty) => {
       try {
-        const q = query(collection(db, 'users'), where('faculty', '==', faculty));
+        const q = query(
+          collection(db, "users"),
+          where("faculty", "==", faculty)
+        );
         const querySnapshot = await getDocs(q);
         const users = [];
         querySnapshot.forEach((doc) => {
@@ -50,7 +61,7 @@ const UserDetailPage = () => {
         });
         setRelatedUsers(users);
       } catch (error) {
-        console.error('Error fetching related users:', error);
+        console.error("Error fetching related users:", error);
       }
     };
 
@@ -62,9 +73,16 @@ const UserDetailPage = () => {
   }
 
   return (
-    <UserDetailPageContainer>
-      {user ? <UserDetail user={user} relatedUsers={relatedUsers} /> : <p>User not found</p>}
-    </UserDetailPageContainer>
+    <>
+      <UserDetailPageContainer>
+        {user ? (
+          <UserDetail user={user} relatedUsers={relatedUsers} />
+        ) : (
+          <p>User not found</p>
+        )}
+      </UserDetailPageContainer>
+      <Footer />
+    </>
   );
 };
 

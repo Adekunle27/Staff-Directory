@@ -122,6 +122,10 @@ const Topstyle = styled.div`
 const AlignBoth = styled.div`
   display: flex;
   gap: 3.5em;
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const BottomSection = styled.div`
@@ -204,6 +208,10 @@ const ParagraphQualification = styled.p`
 
   text-decoration: underline;
   font-size: 1.5rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const IconWrapper = styled.span`
