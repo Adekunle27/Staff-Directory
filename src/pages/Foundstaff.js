@@ -3,6 +3,7 @@ import UserList from "../components/UserList";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import headerImage from "../images/headerimg.png";
+import Footer from "../components/Footer";
 
 const Foundstaff = () => {
   const location = useLocation();
@@ -19,6 +20,7 @@ const Foundstaff = () => {
       <Container>
         <UserList users={foundUsers} />
       </Container>
+      <Footer />
     </>
   );
 };
