@@ -110,6 +110,7 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Name"
             required
           />
+          <p>Email Address</p>
           <Input
             type="email"
             name="email"
@@ -118,6 +119,7 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Email"
             required
           />
+          <p>Phone Number</p>
           <Input
             type="text"
             name="phone"
@@ -126,6 +128,7 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Phone"
             required
           />
+          <p>Department</p>
           <Input
             type="text"
             name="department"
@@ -134,6 +137,7 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Department"
             required
           />
+          <p>Faculty</p>
           <Select
             name="faculty"
             value={formData.faculty}
@@ -152,6 +156,7 @@ const LecturerProfileForm = ({ existingData }) => {
             <option value="Social Science">Social Science</option>
             <option value="Administration">Administration</option>
           </Select>
+          <p>Rank/Status</p>
           <Select
             name="rank"
             value={formData.rank}
@@ -166,6 +171,7 @@ const LecturerProfileForm = ({ existingData }) => {
             <option value="Lecturer I">Lecturer I</option>
             <option value="Lecturer II">Lecturer II</option>
           </Select>
+          <p>Qualifications</p>
           <Input
             type="text"
             name="qualifications"
@@ -174,34 +180,37 @@ const LecturerProfileForm = ({ existingData }) => {
             onChange={handleInputChange}
             required
           />
+          <p>Area(s) of Specialization</p>
           <Input
             type="text"
             name="specialization"
             value={formData.specialization}
             placeholder="Area(s) of Specialization"
             onChange={handleInputChange}
-            required
           />
+          <p>Office Location</p>
           <Input
             type="text"
             name="office"
             value={formData.office}
             placeholder="Office Location"
             onChange={handleInputChange}
-            required
           />
+          <p>Bio</p>
           <Textarea
             name="bio"
             value={formData.bio}
             onChange={handleInputChange}
             placeholder="Bio"
           ></Textarea>
+          <p>Publications (separate each publication with a new line)</p>
           <Textarea
             name="publications"
             value={formData.publications}
             onChange={handleInputChange}
             placeholder="Publications (separate each publication with a new line)"
           ></Textarea>
+          <p>Links (comma-separated)</p>
           <Textarea
             name="links"
             value={formData.links}

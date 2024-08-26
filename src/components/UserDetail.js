@@ -203,7 +203,7 @@ const Paragraph = styled.p`
 const ParagraphQualification = styled.p`
   margin-top: 0;
   display: flex;
-  align-items: center; /* Ensures the icon and text are aligned vertically */
+  align-items: flex-start; /* Ensures the icon and text are aligned vertically */
   line-height: 1;
   font-style: bold;
 
@@ -287,7 +287,7 @@ const UserDetail = ({ user }) => {
             <Label>
               <b>Status/Rank:</b>
             </Label>
-            {user.rank}
+            {user.rank ? user.rank : "Not Available."}
           </Paragraph>
           <Paragraph>
             <IconWrapper>
@@ -296,7 +296,7 @@ const UserDetail = ({ user }) => {
             <Label>
               <b>Qualifications:</b>
             </Label>{" "}
-            {user.qualifications}
+            {user.qualifications ? user.qualifications : "Not Available."}
           </Paragraph>
           <Paragraph>
             <IconWrapper>
@@ -305,7 +305,7 @@ const UserDetail = ({ user }) => {
             <Label>
               <b>Area(s) of Specialization:</b>
             </Label>{" "}
-            {user.specialization}
+            {user.specialization ? user.specialization : "Not Available."}
           </Paragraph>
           <Paragraph>
             <IconWrapper>
@@ -314,7 +314,7 @@ const UserDetail = ({ user }) => {
             <Label>
               <b>Office:</b>
             </Label>
-            RM 239 Faculty of Art building
+            {user.office ? user.office : "Not Available."}
           </Paragraph>
         </RightSectionTop>
       </Topstyle>
@@ -328,7 +328,7 @@ const UserDetail = ({ user }) => {
           </ParagraphQualification>
           <ParagraphQualification>
             <b>Current Research interest</b>:{" "}
-            {user.interest ? user.interest : "Plant Anatomy and Embryology."}
+            {user.interest ? user.interest : "Not Available."}
           </ParagraphQualification>
           <SectionTitle>Publications</SectionTitle>
           <List>
