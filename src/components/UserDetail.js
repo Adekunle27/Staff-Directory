@@ -7,6 +7,7 @@ import { FaAnglesUp } from "react-icons/fa6";
 import { FaAtlassian } from "react-icons/fa6";
 import { FaAtom } from "react-icons/fa6";
 import { FaGraduationCap } from "react-icons/fa";
+import { BsBookmarkCheckFill } from "react-icons/bs";
 
 import news from "../images/news.png";
 import events from "../images/events.png";
@@ -296,6 +297,15 @@ const UserDetail = ({ user }) => {
               <b>Qualifications:</b>
             </Label>{" "}
             {user.qualifications}
+          </Paragraph>
+          <Paragraph>
+            <IconWrapper>
+              <BsBookmarkCheckFill />
+            </IconWrapper>
+            <Label>
+              <b>Area(s) of Specialization:</b>
+            </Label>{" "}
+            {user.specialization}
           </Paragraph>
           <Paragraph>
             <IconWrapper>

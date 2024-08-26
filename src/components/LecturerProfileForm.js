@@ -31,6 +31,7 @@ const LecturerProfileForm = ({ existingData }) => {
     links: "",
     approved: false,
     qualifications: "",
+    specialization: "",
   });
 
   useEffect(() => {
@@ -170,6 +171,14 @@ const LecturerProfileForm = ({ existingData }) => {
             name="qualifications"
             value={formData.qualifications}
             placeholder="Your Qualifications"
+            onChange={handleInputChange}
+            required
+          />
+          <Input
+            type="text"
+            name="specialization"
+            value={formData.specialization}
+            placeholder="Area(s) of Specialization"
             onChange={handleInputChange}
             required
           />
