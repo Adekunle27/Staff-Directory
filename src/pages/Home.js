@@ -4,12 +4,14 @@ import { db } from "../firebase.js";
 import { useNavigate } from "react-router-dom";
 import UserList from "../components/UserList";
 import Header from "../components/Header";
+import InfoSection from "../components/InfoSection.js";
+import Footer from "../components/Footer.js";
+
 import styled from "styled-components";
+
 import SlickSlider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import InfoSection from "../components/InfoSection.js";
-import Footer from "../components/Footer.js";
 
 const Home = () => {
   const [users, setUsers] = useState([]);
