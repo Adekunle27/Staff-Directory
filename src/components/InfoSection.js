@@ -1,10 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-import { FaUserGraduate, FaUsers, FaRunning } from "react-icons/fa";
+import { FaUserGraduate, FaUsers } from "react-icons/fa";
 import { AiFillBank } from "react-icons/ai";
 import { BsDiagram3Fill } from "react-icons/bs";
 
-const InfoSection = () => {
+const InfoSection = ({ users }) => {
+  const numberOfProfessors = users.filter(
+    (user) => user.rank?.toLowerCase() === "professor"
+  ).length;
+
   return (
     <InfoContainer>
       <InfoItem>
@@ -19,13 +23,13 @@ const InfoSection = () => {
       </InfoItem>
       <InfoItem>
         <FaUserGraduate size={50} color="#FFF" />
-        <InfoNumber>100+</InfoNumber>
-        <InfoText>Number of Professor</InfoText>
+        <InfoNumber>{numberOfProfessors}</InfoNumber>
+        <InfoText>Number of Professors</InfoText>
       </InfoItem>
       <InfoItem>
         <FaUsers size={50} color="#FFF" />
-        <InfoNumber>32,000+</InfoNumber>
-        <InfoText>Number of Students</InfoText>
+        <InfoNumber>{users.length}</InfoNumber>
+        <InfoText>Total Number of Staffs</InfoText>
       </InfoItem>
     </InfoContainer>
   );

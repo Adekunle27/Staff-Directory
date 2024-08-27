@@ -27,7 +27,7 @@ const LecturerProfileForm = ({ existingData }) => {
     faculty: "",
     office: "",
     bio: "",
-    publications: "",
+    publications: "1. ",
     links: "",
     approved: false,
     qualifications: "",
@@ -48,9 +48,39 @@ const LecturerProfileForm = ({ existingData }) => {
     }
   }, [existingData]);
 
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    if (name === "publications") {
+      // Split the current publications into an array by new lines
+      const publicationsArray = value.split("\n");
+
+      // Get the last item from the array to determine the last number used
+      const lastPublication = publicationsArray[publicationsArray.length - 1];
+      const match = lastPublication.match(/^(\d+)\.\s/);
+      const lastNumber = match ? parseInt(match[1]) : publicationsArray.length;
+
+      if (e.nativeEvent.inputType === "insertLineBreak") {
+        // Increment the last number for the new line
+        const nextNumber = lastNumber + 1;
+
+        // Append the next number to the new line
+        const updatedValue = value + "\n" + nextNumber + ". ";
+
+        // Update formData with the new formatted value
+        setFormData({ ...formData, [name]: updatedValue });
+      } else {
+        // For other inputs or when not pressing Enter, update normally
+        setFormData({ ...formData, [name]: value });
+      }
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleImageUpload = async (e) => {
@@ -204,12 +234,20 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Bio"
           ></Textarea>
           <p>Publications (separate each publication with a new line)</p>
+          {/* <Textarea
+            name="publications"
+            value={formData.publications}
+            onChange={handleInputChange}
+            placeholder="Publications (separate each publication with a new line)"
+          ></Textarea> */}
+
           <Textarea
             name="publications"
             value={formData.publications}
             onChange={handleInputChange}
             placeholder="Publications (separate each publication with a new line)"
           ></Textarea>
+
           <p>Links (comma-separated)</p>
           <Textarea
             name="links"

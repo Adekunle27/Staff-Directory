@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { db, doc, getDoc, deleteDoc } from '../firebase';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { db, doc, getDoc, deleteDoc } from "../firebase";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -27,7 +27,7 @@ const ProfileImage = styled.div`
   img {
     width: 150px;
     height: 150px;
-    border-radius: 50%;
+    // border-radius: 50%;
   }
 `;
 
@@ -96,18 +96,30 @@ const UserProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const profileDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        const profileDoc = await getDoc(doc(db, "users", currentUser.uid));
         if (profileDoc.exists()) {
           const data = profileDoc.data();
           console.log("Fetched Data: ", data); // Log fetched data
           // Ensure links is an array
-          data.links = Array.isArray(data.links) ? data.links : data.links ? data.links.split(',').map(link => link.trim()) : [];
+          data.links = Array.isArray(data.links)
+            ? data.links
+            : data.links
+            ? data.links.split(",").map((link) => link.trim())
+            : [];
           // Ensure publications is an array
-          data.publications = Array.isArray(data.publications) ? data.publications : data.publications ? data.publications.split(',').map(pub => pub.trim()) : [];
-          
+          data.publications = Array.isArray(data.publications)
+            ? data.publications
+            : data.publications
+            ? data.publications.split(",").map((pub) => pub.trim())
+            : [];
+
           // Add protocol to links if missing
-          data.links = data.links.map(link => link.startsWith('http://') || link.startsWith('https://') ? link : `http://${link}`);
-          
+          data.links = data.links.map((link) =>
+            link.startsWith("http://") || link.startsWith("https://")
+              ? link
+              : `http://${link}`
+          );
+
           setProfileData(data);
           console.log("Profile Data Set: ", data); // Log data after setting state
         } else {
@@ -125,20 +137,20 @@ const UserProfilePage = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Failed to log out', error);
+      console.error("Failed to log out", error);
     }
   };
 
   const handleDeleteProfile = async () => {
     try {
-      await deleteDoc(doc(db, 'users', currentUser.uid));
-      alert('Profile deleted');
+      await deleteDoc(doc(db, "users", currentUser.uid));
+      alert("Profile deleted");
       setProfileData(null);
-      navigate('/create-profile');
+      navigate("/create-profile");
     } catch (error) {
-      console.error('Failed to delete profile', error);
+      console.error("Failed to delete profile", error);
     }
   };
 
@@ -155,7 +167,9 @@ const UserProfilePage = () => {
       <h2>Your Profile</h2>
       <p>Welcome, {profileData.name}</p>
       <AlignButton>
-        <Button onClick={() => navigate('/edit-profile')}>Edit your profile</Button>
+        <Button onClick={() => navigate("/edit-profile")}>
+          Edit your profile
+        </Button>
         <div>
           <Button onClick={handleDeleteProfile}>Delete your profile</Button>
           <Button onClick={handleLogout}>Logout</Button>
@@ -168,25 +182,46 @@ const UserProfilePage = () => {
         </ProfileImage>
         <ProfileDetails>
           <h2>{profileData.name}</h2>
-          <p><strong>Phone Number:</strong> {profileData.phone}</p>
-          <p><strong>Email Address:</strong> {profileData.email}</p>
-          <p><strong>Faculty:</strong> {profileData.faculty}</p>
-          <p><strong>Department:</strong> {profileData.department}</p>
-          <p><strong>Qualifications:</strong> {profileData.qualifications}</p>
+          <p>
+            <strong>Phone Number:</strong> {profileData.phone}
+          </p>
+          <p>
+            <strong>Email Address:</strong> {profileData.email}
+          </p>
+          <p>
+            <strong>Faculty:</strong> {profileData.faculty}
+          </p>
+          <p>
+            <strong>Department:</strong> {profileData.department}
+          </p>
+          <p>
+            <strong>Qualifications:</strong> {profileData.qualifications}
+          </p>
+          <p>
+            <strong>Area of Specialization:</strong>{" "}
+            {profileData.specialization}
+          </p>
+          <p>
+            <strong>Office:</strong> {profileData.office}
+          </p>
           <h3>Brief About Me:</h3>
           <p>{profileData.bio}</p>
           <h3>Publications:</h3>
-          <ul>
+          <ol>
             {profileData.publications.map((publication, index) => (
               <li key={index}>{publication}</li>
             ))}
-          </ul>
+          </ol>
           <h3>Links:</h3>
-          <ul>
+          <ol>
             {profileData.links.map((link, index) => (
-              <li key={index}><a href={link} target="_blank" rel="noopener noreferrer">{link}</a></li>
+              <li key={index}>
+                <a href={link} target="_blank" rel="noopener noreferrer">
+                  {link}
+                </a>
+              </li>
             ))}
-          </ul>
+          </ol>
         </ProfileDetails>
       </ProfileContainer>
     </Container>

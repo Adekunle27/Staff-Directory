@@ -133,7 +133,7 @@ const Home = () => {
         selectedSearchOption={selectedSearchOption}
         setSelectedSearchOption={setSelectedSearchOption}
       />
-      <InfoSection />
+      <InfoSection users={users} />
       <Container>
         <SectionTitle>Recently Added Staff</SectionTitle>
         <SliderContainer>
@@ -155,13 +155,7 @@ const Home = () => {
             ))}
           </Slider>
         </SliderContainer>
-        <FoundStaffText>
-          {searchSubmitted
-            ? `${filteredUsers.length} Staff${
-                filteredUsers.length !== 1 ? "s" : ""
-              } Found`
-            : `Total number of staffs: ${totalStaffs}`}
-        </FoundStaffText>
+        <FoundStaffText>Featured Staffs</FoundStaffText>
 
         <UserList users={filteredUsers} />
 
@@ -282,7 +276,7 @@ const StaffDepartment = styled.p`
 const FoundStaffText = styled.div`
   text-align: center;
   margin: 2rem 0;
-  font-size: 1.25rem;
+  font-size: 3rem;
   font-weight: bold;
 `;
 
