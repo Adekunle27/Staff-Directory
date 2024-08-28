@@ -15,6 +15,7 @@ import AdminProfilePage from "./pages/AdminProfilePage";
 import CreateProfile from "./components/CreateProfile";
 import EditProfile from "./components/EditProfile";
 import PrivateAdminRoute from "./components/PrivateAdminRoute";
+import PrincipalDetails from "./components/PrincipalDetails";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/foundstaff" element={<Foundstaff />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/user/:id" element={<UserDetailPage />} />
+        <Route path="/userdetail/:name" element={<PrincipalDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route

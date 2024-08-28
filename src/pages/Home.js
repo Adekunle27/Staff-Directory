@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getDocs, collection, query, where, limit } from "firebase/firestore";
 import { db } from "../firebase.js";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserList from "../components/UserList";
 import Header from "../components/Header";
 import InfoSection from "../components/InfoSection.js";
@@ -12,6 +12,7 @@ import styled from "styled-components";
 import SlickSlider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import PrincipalOfficers from "../components/PrincipalOfficers.js";
 
 const Home = () => {
   const [users, setUsers] = useState([]);
@@ -137,6 +138,7 @@ const Home = () => {
       />
       <InfoSection users={users} />
       <Container>
+        <PrincipalOfficers />
         <SectionTitle>Recently Added Staff</SectionTitle>
         <SliderContainer>
           <Slider {...sliderSettings}>
@@ -163,12 +165,12 @@ const Home = () => {
 
         <GoToStaff>
           Want to see all the Lecturers? Click{" "}
-          <a
-            href="/staffs"
+          <Link
+            to="/staffs"
             style={{ marginRight: "0.4rem", marginLeft: "0.4rem" }}
           >
             Here
-          </a>{" "}
+          </Link>{" "}
           to go to the staff page.
         </GoToStaff>
       </Container>
