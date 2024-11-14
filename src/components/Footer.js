@@ -21,7 +21,9 @@ const Footer = () => {
             E-Portal
           </FooterLink>
           <FooterLink href="#">Student Affairs</FooterLink>
-          <FooterLink href="#">Admissions</FooterLink>
+          <FooterLink href="https://admissions.oauife.edu.ng/">
+            Admissions
+          </FooterLink>
         </FooterColumn>
         <FooterColumn>
           <FooterLink href="#">Student Clubs</FooterLink>

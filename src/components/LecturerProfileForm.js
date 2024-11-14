@@ -156,7 +156,7 @@ const LecturerProfileForm = ({ existingData }) => {
             value={formData.phone}
             onChange={handleInputChange}
             placeholder="Phone"
-            required
+            // required
           />
           <p>Department</p>
           <Input
@@ -165,7 +165,7 @@ const LecturerProfileForm = ({ existingData }) => {
             value={formData.department}
             onChange={handleInputChange}
             placeholder="Department"
-            required
+            // required
           />
           <p>Faculty</p>
           <Select

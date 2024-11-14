@@ -1,29 +1,78 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled, { keyframes } from "styled-components";
+import { useAuth } from "../contexts/AuthContext";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth, db } from "../firebase"; // Ensure 'auth' is imported from Firebase configuration
+import { doc, setDoc } from "firebase/firestore";
+import google from ".././images/google-logo.png";
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
 
+  const allowedDomain = "@oauife.edu.ng";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
+
+    // Check if email domain matches the allowed domain
+    if (!email.endsWith(allowedDomain)) {
+      setError(`Only emails with the ${allowedDomain} domain are allowed.`);
+      setLoading(false);
+      return;
+    }
+
     try {
       await signup(email, password, { name });
-      navigate('/profile');
-      setError(''); 
+      navigate("/profile");
+      setError("");
     } catch (error) {
-      setError('Failed to sign up. Please check your details and try again.');
-      console.error('Error signing up:', error);
+      setError("Failed to sign up. Please check your details and try again.");
+      console.error("Error signing up:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async (e) => {
+    const provider = new GoogleAuthProvider();
+
+    e.preventDefault();
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const emailDomain = user.email.split("@")[1];
+
+      // Check if Google account has the allowed domain
+      if (emailDomain !== "oauife.edu.ng") {
+        setError(
+          `Google sign-in is only allowed for the ${allowedDomain} domain.`
+        );
+        await auth.signOut(); // Sign out if domain is not allowed
+      } else {
+        const userRef = doc(db, "users", user.uid);
+        await setDoc(
+          userRef,
+          {
+            name: user.displayName,
+            email: user.email,
+          },
+          { merge: true }
+        );
+
+        navigate("/profile");
+      }
+    } catch (error) {
+      console.error("Error with Google sign-in:", error);
+      setError("Google sign-in failed. Please try again.");
     }
   };
 
@@ -32,32 +81,48 @@ const SignUp = () => {
       <FormContainer onSubmit={handleSubmit}>
         <Title>Sign Up</Title>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Input 
-          type="text" 
-          value={name} 
-          onChange={(e) => setName(e.target.value)} 
-          placeholder="Name" 
-          required 
+        <Input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Name"
+          required
         />
-        <Input 
-          type="email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-          placeholder="Email" 
-          required 
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
         />
-        <Input 
-          type="password" 
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)} 
-          placeholder="Password" 
-          required 
+        <Input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
         />
         <Button type="submit" disabled={loading}>
-          {loading ? <Loader className="loader" /> : 'Sign Up'}
+          {loading ? <Loader className="loader" /> : "Sign Up"}
         </Button>
+
+        <GoogleButton
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          style={{ marginTop: "1rem", backgroundColor: "#ccc" }}
+        >
+          <img
+            src={google}
+            style={{ width: "28px", height: "28px" }}
+            alt="Google Logo"
+          />{" "}
+          Sign Up with Google
+        </GoogleButton>
+
         <Footer>
-          <Text>Already have an account? <LoginLink href="/login">Login</LoginLink></Text>
+          <Text>
+            Already have an account? <LoginLink href="/login">Login</LoginLink>
+          </Text>
         </Footer>
       </FormContainer>
     </Container>
@@ -152,6 +217,34 @@ const Button = styled.button`
     font-size: 0.875rem;
   }
 `;
+const GoogleButton = styled.button`
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #ccc;
+  color: black;
+  font-size: 1rem;
+  border: black;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+
+  &:hover {
+    background-color: #e6a700;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 600px) {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+`;
 
 const spin = keyframes`
   100% {
@@ -166,7 +259,7 @@ const Loader = styled.div`
   animation: ${spin} 4s infinite;
 
   &::before,
-  &::after {    
+  &::after {
     content: "";
     grid-area: 1/1;
     border: 8px solid;
@@ -202,4 +295,3 @@ const LoginLink = styled.a`
     text-decoration: underline;
   }
 `;
-

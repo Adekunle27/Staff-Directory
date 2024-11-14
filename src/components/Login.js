@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import google from "../images/google-logo.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,6 +13,9 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false); // Add loading state
   const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const allowedDomain = "@oauife.edu.ng";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,11 +23,40 @@ const Login = () => {
     try {
       await login(email, password);
       setError("");
+      navigate("/profile");
     } catch (error) {
       setError("Failed to log in. Please check your email and password.");
       console.error("Error logging in:", error);
     } finally {
       setLoading(false); // Set loading to false after the process completes
+    }
+  };
+
+  const handleGoogleSignIn = async (e) => {
+    e.preventDefault();
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const emailDomain = user.email.split("@")[1];
+
+      if (emailDomain !== "oauife.edu.ng") {
+        setError(
+          `Google sign-in is only allowed for the ${allowedDomain} domain.`
+        );
+        await auth.signOut();
+      } else {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          navigate("/profile");
+        } else {
+          setError("No profile data found. Please complete your registration.");
+        }
+      }
+    } catch (error) {
+      console.error("Error with Google sign-in:", error);
+      setError("Google sign-in failed. Please try again.");
     }
   };
 
@@ -45,6 +82,10 @@ const Login = () => {
         <Button type="submit" disabled={loading}>
           {loading ? <Loader className="loader" /> : "Sign In"}
         </Button>
+        <GoogleButton onClick={handleGoogleSignIn}>
+          <img src={google} alt="Google Logo" />
+          Sign in with Google
+        </GoogleButton>
         <Footer>
           <Text>
             Don't have an account yet?{" "}
@@ -138,6 +179,26 @@ const Button = styled.button`
   @media (max-width: 600px) {
     padding: 0.5rem;
     font-size: 0.875rem;
+  }
+`;
+
+const GoogleButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ccc;
+  color: #333;
+  border: 1px solid #ddd;
+  margin-top: 1rem;
+
+  img {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+  }
+
+  &:hover {
+    background-color: #f1f1f1;
   }
 `;
 
