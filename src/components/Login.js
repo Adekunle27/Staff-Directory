@@ -21,9 +21,17 @@ const Login = () => {
     e.preventDefault();
     setLoading(true); // Set loading to true when form is submitted
     try {
-      await login(email, password);
+      const userCredential = await login(email, password);
+      const user = userCredential.user;
+
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists() && userDoc.data().isAdmin) {
+        navigate("/admin-dashboard"); // Redirect to admin dashboard if user is an admin
+      } else {
+        navigate("/profile"); // Redirect to profile page otherwise
+      }
+
       setError("");
-      navigate("/profile");
     } catch (error) {
       setError("Failed to log in. Please check your email and password.");
       console.error("Error logging in:", error);
@@ -49,7 +57,11 @@ const Login = () => {
       } else {
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
-          navigate("/profile");
+          if (userDoc.data().isAdmin) {
+            navigate("/admin-dashboard"); // Redirect to admin dashboard for admins
+          } else {
+            navigate("/profile"); // Regular user profile page
+          }
         } else {
           setError("No profile data found. Please complete your registration.");
         }

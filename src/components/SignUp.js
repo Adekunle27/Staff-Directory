@@ -4,7 +4,8 @@ import styled, { keyframes } from "styled-components";
 import { useAuth } from "../contexts/AuthContext";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, db } from "../firebase"; // Ensure 'auth' is imported from Firebase configuration
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+
 import google from ".././images/google-logo.png";
 
 const SignUp = () => {
@@ -22,7 +23,6 @@ const SignUp = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Check if email domain matches the allowed domain
     if (!email.endsWith(allowedDomain)) {
       setError(`Only emails with the ${allowedDomain} domain are allowed.`);
       setLoading(false);
@@ -31,6 +31,14 @@ const SignUp = () => {
 
     try {
       await signup(email, password, { name });
+
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      await setDoc(userRef, {
+        name,
+        email,
+        createdAt: serverTimestamp(), // Add createdAt timestamp here
+      });
+
       navigate("/profile");
       setError("");
     } catch (error) {
@@ -42,21 +50,19 @@ const SignUp = () => {
   };
 
   const handleGoogleSignIn = async (e) => {
-    const provider = new GoogleAuthProvider();
-
     e.preventDefault();
+    const provider = new GoogleAuthProvider();
 
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const emailDomain = user.email.split("@")[1];
 
-      // Check if Google account has the allowed domain
       if (emailDomain !== "oauife.edu.ng") {
         setError(
           `Google sign-in is only allowed for the ${allowedDomain} domain.`
         );
-        await auth.signOut(); // Sign out if domain is not allowed
+        await auth.signOut();
       } else {
         const userRef = doc(db, "users", user.uid);
         await setDoc(
@@ -64,6 +70,7 @@ const SignUp = () => {
           {
             name: user.displayName,
             email: user.email,
+            createdAt: serverTimestamp(), // Add createdAt timestamp here
           },
           { merge: true }
         );
