@@ -126,8 +126,8 @@ const Header = ({
   onSearch,
   selectedSearchOption,
   setSelectedSearchOption,
-  heading = "Welcome to the University Staff Directory", // Default heading
-  subheading = "Search for faculty and staff by name, department, or faculty", // Default subheading
+  heading = "Welcome to OAU Staff Directory Website", // Default heading
+  subheading = "Find staff by name, faculty, department and their rank", // Default subheading
 }) => {
   return (
     <HeaderContainer>

@@ -460,7 +460,7 @@ const Home = () => {
             ))}
           </Slider>
         </SliderContainer>
-        <FoundStaffText>Featured Staffs</FoundStaffText>
+        <FoundStaffText>Featured Staff</FoundStaffText>
 
         <UserList users={filteredUsers} />
 
@@ -537,6 +537,7 @@ const StaffCard = styled.div`
   text-align: center;
   transition: transform 0.3s;
   color: #003366;
+  max-height: 21.5rem;
 
   &:hover {
     transform: translateY(-5px);
@@ -548,14 +549,16 @@ const StaffCard = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width: 15.5rem;
-  height: 12rem;
-  object-fit: cover;
+  width: 15rem;
+  max-height: 14rem;
+  // object-fit: cover;
   border-radius: 10px;
   margin-bottom: 1rem;
+  // object-fit: cover;
 
   @media (max-width: 768px) {
     width: 100%;
+    // object-fit: cover;
   }
 `;
 
@@ -571,6 +574,7 @@ const StaffName = styled.h3`
 const StaffFaculty = styled.p`
   font-size: 1rem;
   color: #003366;
+  margin-bottom: -0.4rem;
 `;
 
 const StaffDepartment = styled.p`

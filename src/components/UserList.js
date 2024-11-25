@@ -97,6 +97,7 @@ const StyledUserCard = styled.div`
   box-shadow: 4rem 4rem 8rem rgba(0, 0, 0, 0.3);
   transition: transform 0.3s;
   color: #003366;
+  max-height: 500px;
 
   &:hover {
     transform: translateY(-5px);
@@ -104,7 +105,7 @@ const StyledUserCard = styled.div`
 
   img {
     width: 100%;
-    height: auto;
+    height: 290px;
     border-radius: 10px;
   }
 

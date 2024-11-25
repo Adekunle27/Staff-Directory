@@ -146,9 +146,15 @@ const UserProfilePage = () => {
   const handleDeleteProfile = async () => {
     try {
       await deleteDoc(doc(db, "users", currentUser.uid));
-      alert("Profile deleted");
-      setProfileData(null);
-      navigate("/create-profile");
+
+      if (window.confirm("Are you sure you want to delete your profile?")) {
+        alert("Profile deleted");
+        setProfileData(null);
+        navigate("/create-profile");
+      } else {
+        setProfileData(profileData);
+        return;
+      }
     } catch (error) {
       console.error("Failed to delete profile", error);
     }

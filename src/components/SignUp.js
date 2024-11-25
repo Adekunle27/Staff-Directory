@@ -58,7 +58,7 @@ const SignUp = () => {
       const user = result.user;
       const emailDomain = user.email.split("@")[1];
 
-      if (emailDomain !== "oauife.edu.ng") {
+      if (emailDomain !== "student.oauife.edu.ng") {
         setError(
           `Google sign-in is only allowed for the ${allowedDomain} domain.`
         );
@@ -75,7 +75,7 @@ const SignUp = () => {
           { merge: true }
         );
 
-        navigate("/profile");
+        navigate("/edit-profile");
       }
     } catch (error) {
       console.error("Error with Google sign-in:", error);
@@ -87,8 +87,9 @@ const SignUp = () => {
     <Container>
       <FormContainer onSubmit={handleSubmit}>
         <Title>Sign Up</Title>
+        <TitleInfo>Sign Up with your OAU Email Address here</TitleInfo>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Input
+        {/* <Input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -111,7 +112,7 @@ const SignUp = () => {
         />
         <Button type="submit" disabled={loading}>
           {loading ? <Loader className="loader" /> : "Sign Up"}
-        </Button>
+        </Button> */}
 
         <GoogleButton
           onClick={handleGoogleSignIn}
@@ -159,22 +160,35 @@ const FormContainer = styled.form`
   background-color: #ffffff;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
 
   @media (max-width: 600px) {
     padding: 1rem;
     max-width: 100%;
-    box-shadow: none;
+    // box-shadow: none;
+    border-radius: 8px;
+    box-shadow: 5px 5px 4px 8px rgba(0, 0, 0, 0.1);
   }
 `;
 
 const Title = styled.h2`
   margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: bold;
   color: #333;
   text-align: center;
   position: relative;
+`;
+
+const TitleInfo = styled.p`
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 1rem;
+  // font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  text-align: center;
 `;
 
 const ErrorMessage = styled.p`
