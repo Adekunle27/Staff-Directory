@@ -450,7 +450,15 @@ const Home = () => {
               >
                 <ProfileImage src={staff.image} alt={staff.name} />
                 <StaffInfo>
-                  <StaffName>{staff.name}</StaffName>
+                  <StaffName>
+                    {staff.name
+                      .toLowerCase()
+                      .split(" ")
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(" ")}
+                  </StaffName>
                   <StaffFaculty> Faculty: {staff.faculty}</StaffFaculty>
                   <StaffDepartment>
                     Department: {staff.department}

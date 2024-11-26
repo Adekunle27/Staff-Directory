@@ -28,7 +28,13 @@ const UserList = ({ search, users }) => {
           <StyledLink to={`/user/${user.id}`}>
             <img src={user.image} alt={user.name} />
             <div>
-              <h3>{user.name}</h3>
+              <h3>
+                {user.name
+                  .toLowerCase()
+                  .split(" ")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
+              </h3>
               <Paragraph>
                 <IconWrapper>
                   <MdEmail />
@@ -97,7 +103,7 @@ const StyledUserCard = styled.div`
   box-shadow: 4rem 4rem 8rem rgba(0, 0, 0, 0.3);
   transition: transform 0.3s;
   color: #003366;
-  max-height: 500px;
+  max-height: 30rem;
 
   &:hover {
     transform: translateY(-5px);
@@ -105,7 +111,7 @@ const StyledUserCard = styled.div`
 
   img {
     width: 100%;
-    height: 290px;
+    max-height: 18.5rem;
     border-radius: 10px;
   }
 

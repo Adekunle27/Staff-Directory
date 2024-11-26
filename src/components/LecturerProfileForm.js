@@ -19,6 +19,8 @@ const LecturerProfileForm = ({ existingData }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     image: "",
+    fname: "",
+    lname: "",
     name: "",
     email: "",
     phone: "",
@@ -47,11 +49,6 @@ const LecturerProfileForm = ({ existingData }) => {
       });
     }
   }, [existingData]);
-
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData({ ...formData, [name]: value });
-  // };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -130,7 +127,14 @@ const LecturerProfileForm = ({ existingData }) => {
       <ProfileContainer>
         {formData.image && <ProfileImage src={formData.image} alt="Profile" />}
         <Form onSubmit={handleSubmit}>
-          <Title>{formData.name}</Title>
+          <Title>
+            Name:{" "}
+            {formData.name
+              .toLowerCase()
+              .split(" ")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ")}
+          </Title>
           <Input type="file" onChange={handleImageUpload} />
           <Input
             type="text"

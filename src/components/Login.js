@@ -49,7 +49,7 @@ const Login = () => {
       const user = result.user;
       const emailDomain = user.email.split("@")[1];
 
-      if (emailDomain !== "student.oauife.edu.ng") {
+      if (emailDomain !== "oauife.edu.ng") {
         setError(
           `Google sign-in is only allowed for the ${allowedDomain} domain.`
         );
@@ -60,7 +60,7 @@ const Login = () => {
           if (userDoc.data().isAdmin) {
             navigate("/admin-dashboard"); // Redirect to admin dashboard for admins
           } else {
-            navigate("/edit-profile"); // Regular user profile page
+            navigate("/profile"); // Regular user profile page
           }
         } else {
           setError("No profile data found. Please complete your registration.");

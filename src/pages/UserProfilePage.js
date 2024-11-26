@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { db, doc, getDoc, deleteDoc } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -85,6 +85,38 @@ const AlignButton = styled.div`
 
 const AlignLoading = styled.div`
   text-align: center;
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+`;
+
+const spin = keyframes`
+  100% {
+    transform: rotate(1turn);
+  }
+`;
+
+const Loader = styled.div`
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  animation: ${spin} 4s infinite;
+
+  &::before,
+  &::after {
+    content: "";
+    grid-area: 1/1;
+    border: 8px solid;
+    border-radius: 50%;
+    border-color: red green #0000 #0000;
+    mix-blend-mode: darken;
+    animation: ${spin} 1s infinite linear;
+  }
+
+  &::after {
+    border-color: #0000 #0000 blue blue;
+    animation-direction: reverse;
+  }
 `;
 
 const UserProfilePage = () => {
@@ -144,24 +176,31 @@ const UserProfilePage = () => {
   };
 
   const handleDeleteProfile = async () => {
-    try {
-      await deleteDoc(doc(db, "users", currentUser.uid));
-
-      if (window.confirm("Are you sure you want to delete your profile?")) {
+    if (window.confirm("Are you sure you want to delete your profile?")) {
+      try {
+        await deleteDoc(doc(db, "users", currentUser.uid));
         alert("Profile deleted");
         setProfileData(null);
         navigate("/create-profile");
-      } else {
-        setProfileData(profileData);
-        return;
+      } catch (error) {
+        console.error("Failed to delete profile", error);
+        alert(
+          "An error occurred while deleting the profile. Please try again."
+        );
       }
-    } catch (error) {
-      console.error("Failed to delete profile", error);
+    } else {
+      // User cancelled the deletion
+      alert("Profile deletion cancelled.");
     }
   };
 
   if (loading) {
-    return <AlignLoading>Loading...</AlignLoading>;
+    return (
+      <AlignLoading>
+        <Loader className="loader" />
+        <p>Loading...</p>
+      </AlignLoading>
+    );
   }
 
   if (!profileData) {
@@ -184,10 +223,12 @@ const UserProfilePage = () => {
       <ProfileContainer>
         <ProfileImage>
           {profileData.image && <img src={profileData.image} alt="Profile" />}
-          <p>Status: {profileData.rank}</p>
         </ProfileImage>
         <ProfileDetails>
           <h2>{profileData.name}</h2>
+          <p>
+            <strong>Status: {profileData.rank}</strong>
+          </p>
           <p>
             <strong>Phone Number:</strong> {profileData.phone}
           </p>

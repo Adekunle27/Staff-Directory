@@ -75,7 +75,7 @@ const Staffs = () => {
         selectedSearchOption={selectedSearchOption}
         setSelectedSearchOption={setSelectedSearchOption}
         heading="All Staffs"
-        subheading="Search from the list of all available staffs"
+        subheading="Search from the list of all available staff"
       />
       <Container>
         <FoundStaffText>

@@ -10,7 +10,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Footer from "../components/Footer";
 
 const UserDetailPageContainer = styled.div`
@@ -19,6 +19,42 @@ const UserDetailPageContainer = styled.div`
   margin: 4rem auto;
   @media (max-width: 768px) {
     padding: 1rem;
+  }
+`;
+
+const AlignLoading = styled.div`
+  text-align: center;
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+`;
+
+const spin = keyframes`
+  100% {
+    transform: rotate(1turn);
+  }
+`;
+
+const Loader = styled.div`
+  width: 50px;
+  aspect-ratio: 1;
+  display: grid;
+  animation: ${spin} 4s infinite;
+
+  &::before,
+  &::after {
+    content: "";
+    grid-area: 1/1;
+    border: 8px solid;
+    border-radius: 50%;
+    border-color: red green #0000 #0000;
+    mix-blend-mode: darken;
+    animation: ${spin} 1s infinite linear;
+  }
+
+  &::after {
+    border-color: #0000 #0000 blue blue;
+    animation-direction: reverse;
   }
 `;
 
@@ -69,7 +105,12 @@ const UserDetailPage = () => {
   }, [id]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <AlignLoading>
+        <Loader className="loader" />
+        <p>Loading...</p>
+      </AlignLoading>
+    );
   }
 
   return (
