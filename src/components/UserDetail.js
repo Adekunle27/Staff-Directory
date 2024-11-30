@@ -1,13 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { MdEmail } from "react-icons/md";
-import { FaPhoneVolume } from "react-icons/fa6";
+import { FaPaintbrush, FaPhoneVolume } from "react-icons/fa6";
 import { CgOrganisation } from "react-icons/cg";
 import { FaAnglesUp } from "react-icons/fa6";
 import { FaAtlassian } from "react-icons/fa6";
 import { FaAtom } from "react-icons/fa6";
 import { FaGraduationCap } from "react-icons/fa";
 import { BsBookmarkCheckFill } from "react-icons/bs";
+import DOMPurify from "dompurify";
 
 import news from "../images/news.png";
 import events from "../images/events.png";
@@ -243,7 +244,13 @@ const UserDetail = ({ user }) => {
           <ProfileImage src={user.image} alt={user.name} />
         </LeftSection>
         <RightSectionTop>
-          <Title>{user.name}</Title>
+          <Title>
+            {user.name
+              .toLowerCase()
+              .split(" ")
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(" ")}
+          </Title>
           <Paragraph>
             <IconWrapper>
               <FaPhoneVolume />
@@ -251,7 +258,7 @@ const UserDetail = ({ user }) => {
             <Label>
               <b>Phone Number:</b>
             </Label>
-            {user.phone}
+            {user.phone ? user.phone : "Not Available."}
           </Paragraph>
           <Paragraph>
             <IconWrapper>
@@ -260,7 +267,7 @@ const UserDetail = ({ user }) => {
             <Label>
               <b>Email Address:</b>
             </Label>
-            {user.email}
+            {user.email ? user.email : "Not Available."}
           </Paragraph>
           <Paragraph>
             <IconWrapper>
@@ -269,7 +276,9 @@ const UserDetail = ({ user }) => {
             <Label>
               <b>Faculty:</b>
             </Label>
-            {user.faculty}
+            {user.faculty === "EDM"
+              ? "Environmental design and management"
+              : user.faculty}
           </Paragraph>
           <Paragraph>
             <IconWrapper>
@@ -278,7 +287,7 @@ const UserDetail = ({ user }) => {
             <Label>
               <b>Department:</b>
             </Label>
-            {user.department}
+            {user.department ? user.department : "Not Available."}
           </Paragraph>
           <Paragraph>
             <IconWrapper>
@@ -294,7 +303,7 @@ const UserDetail = ({ user }) => {
               <FaGraduationCap />
             </IconWrapper>
             <Label>
-              <b>Qualifications:</b>
+              <b>Academic Qualification(s):</b>
             </Label>{" "}
             {user.qualifications ? user.qualifications : "Not Available."}
           </Paragraph>
@@ -309,10 +318,19 @@ const UserDetail = ({ user }) => {
           </Paragraph>
           <Paragraph>
             <IconWrapper>
+              <FaPaintbrush />
+            </IconWrapper>
+            <Label>
+              <b>Research interest:</b>
+            </Label>{" "}
+            {user.interest ? user.interest : "Not Available."}
+          </Paragraph>
+          <Paragraph>
+            <IconWrapper>
               <CgOrganisation />
             </IconWrapper>
             <Label>
-              <b>Office:</b>
+              <b>Office Address:</b>
             </Label>
             {user.office ? user.office : "Not Available."}
           </Paragraph>
@@ -320,27 +338,23 @@ const UserDetail = ({ user }) => {
       </Topstyle>
       <AlignBoth>
         <BottomSection>
-          <SectionTitle>My Bio</SectionTitle>
+          <SectionTitle>Career Summary</SectionTitle>
           <Paragraph>{user.bio} </Paragraph>
 
-          <ParagraphQualification>
-            <b>Academic Qualifications</b>: {user.qualifications}
-          </ParagraphQualification>
-          <ParagraphQualification>
-            <b>Current Research interest</b>:{" "}
-            {user.interest ? user.interest : "Not Available."}
-          </ParagraphQualification>
           <SectionTitle>Publications</SectionTitle>
-          <List>
-            {Array.isArray(user.publications) &&
-            user.publications.length > 0 ? (
-              user.publications.map((publication, index) => (
-                <ListItem key={index}>{linkify(publication)}</ListItem>
-              ))
-            ) : (
-              <Paragraph>No publications available.</Paragraph>
-            )}
-          </List>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(user.publications),
+            }}
+          ></div>
+
+          <SectionTitle>Journals/Articles</SectionTitle>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(user.journal),
+            }}
+          ></div>
+
           <SectionTitle>Links</SectionTitle>
           <List>
             {Array.isArray(user.links) && user.links.length > 0 ? (

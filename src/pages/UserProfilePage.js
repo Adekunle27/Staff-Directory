@@ -3,6 +3,7 @@ import { db, doc, getDoc, deleteDoc } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
+import DOMPurify from "dompurify";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -153,7 +154,6 @@ const UserProfilePage = () => {
           );
 
           setProfileData(data);
-          console.log("Profile Data Set: ", data); // Log data after setting state
         } else {
           console.error("No such document!");
         }
@@ -242,7 +242,8 @@ const UserProfilePage = () => {
             <strong>Department:</strong> {profileData.department}
           </p>
           <p>
-            <strong>Qualifications:</strong> {profileData.qualifications}
+            <strong>Academic Qualifications:</strong>{" "}
+            {profileData.qualifications}
           </p>
           <p>
             <strong>Area of Specialization:</strong>{" "}
@@ -251,15 +252,25 @@ const UserProfilePage = () => {
           <p>
             <strong>Office:</strong> {profileData.office}
           </p>
-          <h3>Brief About Me:</h3>
-          <p>{profileData.bio}</p>
+          <h3>Career Summary:</h3>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(profileData.bio),
+            }}
+          ></div>
           <h3>Publications:</h3>
-          <ol>
-            {profileData.publications.map((publication, index) => (
-              <li key={index}>{publication}</li>
-            ))}
-          </ol>
-          <h3>Links:</h3>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(profileData.publications),
+            }}
+          ></div>
+          <h3>Journals & Articles:</h3>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(profileData.journal),
+            }}
+          ></div>
+          <h3>Research Profile(s):</h3>
           <ol>
             {profileData.links.map((link, index) => (
               <li key={index}>

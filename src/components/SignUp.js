@@ -58,7 +58,7 @@ const SignUp = () => {
       const user = result.user;
       const emailDomain = user.email.split("@")[1];
 
-      if (emailDomain !== "oauife.edu.ng") {
+      if (emailDomain !== "student.oauife.edu.ng") {
         setError(
           `Google sign-in is only allowed for the ${allowedDomain} domain.`
         );

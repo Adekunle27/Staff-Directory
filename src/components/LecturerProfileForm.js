@@ -10,17 +10,17 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
+  getDoc,
 } from "../firebase.js";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
 
 const LecturerProfileForm = ({ existingData }) => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     image: "",
-    fname: "",
-    lname: "",
     name: "",
     email: "",
     phone: "",
@@ -29,55 +29,54 @@ const LecturerProfileForm = ({ existingData }) => {
     faculty: "",
     office: "",
     bio: "",
-    publications: "1. ",
+    publications: "",
     links: "",
     approved: false,
     qualifications: "",
     specialization: "",
+    journal: "",
   });
+
+  const facultyToDepartments = {
+    Technology: [
+      "Computer Science",
+      "Electrical Engineering",
+      "Mechanical Engineering",
+    ],
+    Science: ["Mathematics", "Physics", "Biology"],
+    "Clinical Science": ["Medicine", "Nursing", "Surgery"],
+    Pharmacy: ["Pharmacology", "Clinical Pharmacy"],
+    Law: ["Corporate Law", "Criminal Law"],
+    EDM: ["Architecture", "Estate Management"],
+    Agriculture: ["Crop Science", "Animal Science"],
+    Art: ["English", "History", "Philosophy"],
+    "Social Science": ["Economics", "Political Science", "Psychology"],
+    Administration: [
+      "Accounting",
+      "Business Administration",
+      "Public Administration",
+    ],
+  };
 
   useEffect(() => {
     if (existingData) {
-      setFormData({
-        ...existingData,
-        publications: Array.isArray(existingData.publications)
-          ? existingData.publications.join("\n")
-          : existingData.publications,
-        links: Array.isArray(existingData.links)
-          ? existingData.links.join(", ")
-          : existingData.links,
-      });
+      setFormData(existingData);
     }
   }, [existingData]);
 
+  const handleFacultyChange = (e) => {
+    const selectedFaculty = e.target.value;
+    setFormData({ ...formData, faculty: selectedFaculty, department: "" }); // Reset department
+  };
+
+  const handleDepartmentChange = (e) => {
+    setFormData({ ...formData, department: e.target.value });
+  };
+
+  // Handle changes for non-React Quill inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    if (name === "publications") {
-      // Split the current publications into an array by new lines
-      const publicationsArray = value.split("\n");
-
-      // Get the last item from the array to determine the last number used
-      const lastPublication = publicationsArray[publicationsArray.length - 1];
-      const match = lastPublication.match(/^(\d+)\.\s/);
-      const lastNumber = match ? parseInt(match[1]) : publicationsArray.length;
-
-      if (e.nativeEvent.inputType === "insertLineBreak") {
-        // Increment the last number for the new line
-        const nextNumber = lastNumber + 1;
-
-        // Append the next number to the new line
-        const updatedValue = value + "\n" + nextNumber + ". ";
-
-        // Update formData with the new formatted value
-        setFormData({ ...formData, [name]: updatedValue });
-      } else {
-        // For other inputs or when not pressing Enter, update normally
-        setFormData({ ...formData, [name]: value });
-      }
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleImageUpload = async (e) => {
@@ -88,29 +87,60 @@ const LecturerProfileForm = ({ existingData }) => {
     setFormData({ ...formData, image: photoURL });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const updatedData = {
         ...formData,
-        status: "pending",
-        links: formData.links.split(",").map((link) => link.trim()), // Convert links to an array
-        publications: formData.publications
-          .split("\n")
-          .map((pub) => pub.trim()), // Ensure each publication is on a new line
+        status: "approved",
+        // Check if links is a string before splitting
+        links: Array.isArray(formData.links)
+          ? formData.links // Use the array as-is if it's already an array
+          : formData.links.split(",").map((link) => link.trim()), // Convert to an array if it's a string
       };
+
+      // Save data to Firestore
+      const docRef = doc(db, "users", currentUser.uid);
       if (existingData) {
-        await updateDoc(doc(db, "users", currentUser.uid), updatedData);
+        await updateDoc(docRef, updatedData);
       } else {
-        await setDoc(doc(db, "users", currentUser.uid), updatedData);
+        await setDoc(docRef, updatedData);
       }
+
       alert("Profile submitted for approval");
       navigate("/profile");
     } catch (error) {
-      console.error("Error submitting profile:", error);
-      alert("There was an error submitting your profile. Please try again.");
+      console.error("Error submitting profile:", error.message);
+      alert(`There was an error submitting your profile: ${error.message}`);
     }
   };
+
+  // Handle React Quill editor changes
+  const handleQuillChange = (fieldName, value) => {
+    setFormData((prev) => ({ ...prev, [fieldName]: value }));
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const docRef = doc(db, "users", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setFormData(docSnap.data());
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    if (currentUser?.uid) {
+      fetchUserData();
+    }
+  }, [currentUser]);
 
   const handleDelete = async () => {
     try {
@@ -128,7 +158,8 @@ const LecturerProfileForm = ({ existingData }) => {
         {formData.image && <ProfileImage src={formData.image} alt="Profile" />}
         <Form onSubmit={handleSubmit}>
           <Title>
-            Name:{" "}
+            {" "}
+            Name: {formData.title}
             {formData.name
               .toLowerCase()
               .split(" ")
@@ -136,12 +167,13 @@ const LecturerProfileForm = ({ existingData }) => {
               .join(" ")}
           </Title>
           <Input type="file" onChange={handleImageUpload} />
+          <p>Name (With your title e.g. Prof. Dr. Mr. Mrs. e.t.c.)</p>
           <Input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            placeholder="Name"
+            placeholder="Enter your First name, then Last name"
             required
           />
           <p>Email Address</p>
@@ -162,33 +194,36 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Phone"
             // required
           />
-          <p>Department</p>
-          <Input
-            type="text"
-            name="department"
-            value={formData.department}
-            onChange={handleInputChange}
-            placeholder="Department"
-            // required
-          />
           <p>Faculty</p>
           <Select
             name="faculty"
             value={formData.faculty}
-            onChange={handleInputChange}
+            onChange={handleFacultyChange}
             required
           >
             <option value="">Select Faculty</option>
-            <option value="Technology">Technology</option>
-            <option value="Science">Science</option>
-            <option value="Clinical Science">Clinical Science</option>
-            <option value="Pharmacy">Pharmacy</option>
-            <option value="Law">Law</option>
-            <option value="EDM">EDM</option>
-            <option value="Agriculture">Agriculture</option>
-            <option value="Art">Art</option>
-            <option value="Social Science">Social Science</option>
-            <option value="Administration">Administration</option>
+            {Object.keys(facultyToDepartments).map((faculty) => (
+              <option key={faculty} value={faculty}>
+                {faculty}
+              </option>
+            ))}
+          </Select>
+
+          <p>Department</p>
+          <Select
+            name="department"
+            value={formData.department}
+            onChange={handleDepartmentChange}
+            required
+            disabled={!formData.faculty} // Disable if no faculty is selected
+          >
+            <option value="">Select Department</option>
+            {formData.faculty &&
+              facultyToDepartments[formData.faculty].map((department) => (
+                <option key={department} value={department}>
+                  {department}
+                </option>
+              ))}
           </Select>
           <p>Rank/Status</p>
           <Select
@@ -205,7 +240,7 @@ const LecturerProfileForm = ({ existingData }) => {
             <option value="Lecturer I">Lecturer I</option>
             <option value="Lecturer II">Lecturer II</option>
           </Select>
-          <p>Qualifications</p>
+          <p>Academic Qualifications</p>
           <Input
             type="text"
             name="qualifications"
@@ -222,7 +257,7 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Area(s) of Specialization"
             onChange={handleInputChange}
           />
-          <p>Office Location</p>
+          <p>Office Address</p>
           <Input
             type="text"
             name="office"
@@ -230,29 +265,35 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Office Location"
             onChange={handleInputChange}
           />
-          <p>Bio</p>
-          <Textarea
-            name="bio"
+          <p>
+            Career Summary/Bio (Make use of <b>Bold</b>, <em>Italics</em>,{" "}
+            <u>Underline</u> for standout information)
+          </p>
+          <ReactQuill
             value={formData.bio}
-            onChange={handleInputChange}
-            placeholder="Bio"
-          ></Textarea>
+            onChange={(value) => handleQuillChange("bio", value)}
+            placeholder="Enter your career summary here"
+            theme="snow"
+            style={{ height: "200px", marginBottom: "50px" }}
+          />
           <p>Publications (separate each publication with a new line)</p>
-          {/* <Textarea
-            name="publications"
+          <ReactQuill
             value={formData.publications}
-            onChange={handleInputChange}
-            placeholder="Publications (separate each publication with a new line)"
-          ></Textarea> */}
+            onChange={(value) => handleQuillChange("publications", value)}
+            placeholder="Enter your publications"
+            theme="snow"
+            style={{ height: "190px", marginBottom: "50px" }}
+          />
+          <p>List of Journal/Articles/Conference Papers</p>
+          <ReactQuill
+            value={formData.journal}
+            onChange={(value) => handleQuillChange("journal", value)}
+            placeholder="Enter your Journals & Articles"
+            theme="snow"
+            style={{ height: "190px", marginBottom: "50px" }}
+          />
 
-          <Textarea
-            name="publications"
-            value={formData.publications}
-            onChange={handleInputChange}
-            placeholder="Publications (separate each publication with a new line)"
-          ></Textarea>
-
-          <p>Links (comma-separated)</p>
+          <p>Links (separate each of your links with a comma)</p>
           <Textarea
             name="links"
             value={formData.links}
