@@ -123,6 +123,7 @@ const Topstyle = styled.div`
 
 const AlignBoth = styled.div`
   display: flex;
+  // flex-direction: row;
   gap: 3.5em;
   @media (max-width: 768px) {
     display: flex;
@@ -131,13 +132,13 @@ const AlignBoth = styled.div`
 `;
 
 const BottomSection = styled.div`
-  flex: 7.5;
+  flex: 0.75;
   display: flex;
   flex-direction: column;
 `;
 
 const BottomRight = styled.div`
-  flex: 2.5;
+  flex: 0.25;
   flex-direction: column;
   display: flex;
   gap: 1.5rem; /* Adds spacing between news items */
@@ -342,18 +343,23 @@ const UserDetail = ({ user }) => {
           <Paragraph>{user.bio} </Paragraph>
 
           <SectionTitle>Publications</SectionTitle>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(user.publications),
-            }}
-          ></div>
+          <List>
+            {Array.isArray(user.publications) &&
+            user.publications.length > 0 ? (
+              user.publications.map((publication, index) => (
+                <ListItem key={index}>{linkify(publication)}</ListItem>
+              ))
+            ) : (
+              <Paragraph>No publications available.</Paragraph>
+            )}
+          </List>
 
-          <SectionTitle>Journals/Articles</SectionTitle>
+          {/* <SectionTitle>Journals/Articles</SectionTitle>
           <div
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(user.journal),
             }}
-          ></div>
+          ></div> */}
 
           <SectionTitle>Links</SectionTitle>
           <List>
