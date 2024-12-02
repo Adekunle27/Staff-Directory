@@ -9,9 +9,11 @@ import { FaAtom } from "react-icons/fa6";
 import { FaGraduationCap } from "react-icons/fa";
 import { BsBookmarkCheckFill } from "react-icons/bs";
 import DOMPurify from "dompurify";
+import { PublicationsWrapper, QuillContentWrapper } from "./styles";
 
 import news from "../images/news.png";
 import events from "../images/events.png";
+import { TiPointOfInterest } from "react-icons/ti";
 
 const linkify = (text) => {
   const urlPattern =
@@ -73,15 +75,27 @@ const linkify = (text) => {
   });
 };
 
+// const UserDetailContainer = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   align-items: flex-start;
+//   margin-bottom: 2rem;
+//   @media (max-width: 768px) {
+//     flex-direction: column;
+//     align-items: flex-start;
+//   }
+// `;
+
 const UserDetailContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 1200px; /* Limits overall width for better readability */
+  margin: 0 auto; /* Centers the component */
+  padding: 1rem;
   @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 0.5rem;
   }
 `;
 
@@ -121,28 +135,78 @@ const Topstyle = styled.div`
   }
 `;
 
+// const AlignBoth = styled.div`
+//   display: flex;
+//   // flex-direction: row;
+//   gap: 3.5em;
+//   @media (max-width: 768px) {
+//     display: flex;
+//     flex-direction: column;
+//   }
+// `;
+
 const AlignBoth = styled.div`
   display: flex;
-  // flex-direction: row;
-  gap: 3.5em;
+  gap: 3.5rem;
+  width: 100%;
+
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
+    width: 100%;
   }
 `;
 
+// const BottomSection = styled.div`
+//   // flex: 0.75;
+//   display: flex;
+//   flex-direction: column;
+// `;
+
 const BottomSection = styled.div`
-  flex: 0.75;
+  max-width: 70%; /* Ensures it adapts to container width */
   display: flex;
   flex-direction: column;
+  overflow-wrap: break-word;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
+// const BottomRight = styled.div`
+//   // flex: 0.25;
+//   flex-direction: column;
+//   display: flex;
+//   gap: 1.5rem; /* Adds spacing between news items */
+// `;
+
 const BottomRight = styled.div`
-  flex: 0.25;
-  flex-direction: column;
   display: flex;
-  gap: 1.5rem; /* Adds spacing between news items */
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 23%;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
+
+// const NewsItem = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   background-color: #f3dbdb;
+//   padding: 1rem;
+//   border-radius: 5px;
+//   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+// `;
+
+// const NewsImage = styled.img`
+//   width: 100%;
+//   height: auto;
+//   border-radius: 5px;
+//   margin-bottom: 0.5rem;
+// `;
 
 const NewsItem = styled.div`
   display: flex;
@@ -151,13 +215,15 @@ const NewsItem = styled.div`
   padding: 1rem;
   border-radius: 5px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Ensures content doesn't overflow */
 `;
 
 const NewsImage = styled.img`
-  width: 100%;
+  width: 100%; /* Ensures responsiveness */
   height: auto;
   border-radius: 5px;
   margin-bottom: 0.5rem;
+  object-fit: cover;
 `;
 
 const NewsTitle = styled.h4`
@@ -173,14 +239,27 @@ const NewsDescription = styled.p`
   color: #333;
 `;
 
-const ProfileImage = styled.img`
-  width: 300px;
-  height: 300px;
-  object-fit: cover;
+// const ProfileImage = styled.img`
+//   width: 300px;
+//   height: 300px;
+//   object-fit: cover;
 
+//   @media (max-width: 768px) {
+//     display: flex;
+//     align-self: center;
+//   }
+// `;
+
+const ProfileImage = styled.img`
+  width: 100%; /* Responsive for larger screens */
+  max-width: 300px; /* Sets an upper limit for the size */
+  height: auto;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   @media (max-width: 768px) {
-    display: flex;
     align-self: center;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -188,20 +267,39 @@ const Title = styled.h1`
   margin-top: 0;
 `;
 
+// const SectionTitle = styled.h3`
+//   margin-bottom: 0.5rem;
+//   background-color: #003366;
+//   color: #fff;
+//   padding: 1rem 1.5rem;
+//   border-radius: 5px;
+// `;
+
 const SectionTitle = styled.h3`
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   background-color: #003366;
   color: #fff;
-  padding: 1rem 1.5rem;
+  padding: 0.8rem 1rem;
   border-radius: 5px;
+  font-size: 1.25rem; /* Adjusted for readability */
+  // text-align: center; /* Centers the text */
 `;
 
+// const Paragraph = styled.p`
+//   margin-top: 0;
+//   display: flex;
+//   align-items: center; /* Ensures the icon and text are aligned vertically */
+//   line-height: 1.5;
+// `;
+
 const Paragraph = styled.p`
-  margin-top: 0;
+  margin: 0.5rem 0;
   display: flex;
-  align-items: center; /* Ensures the icon and text are aligned vertically */
-  line-height: 1.5;
+  align-items: center;
+  line-height: 1.6;
+  word-wrap: break-word; /* Prevents long words from breaking layout */
 `;
+
 const ParagraphQualification = styled.p`
   margin-top: 0;
   display: flex;
@@ -301,6 +399,15 @@ const UserDetail = ({ user }) => {
           </Paragraph>
           <Paragraph>
             <IconWrapper>
+              <TiPointOfInterest />
+            </IconWrapper>
+            <Label>
+              <b>Staff Category:</b>
+            </Label>
+            {user.category ? user.category : "Not Available."}
+          </Paragraph>
+          <Paragraph>
+            <IconWrapper>
               <FaGraduationCap />
             </IconWrapper>
             <Label>
@@ -340,26 +447,25 @@ const UserDetail = ({ user }) => {
       <AlignBoth>
         <BottomSection>
           <SectionTitle>Career Summary</SectionTitle>
-          <Paragraph>{user.bio} </Paragraph>
+          <QuillContentWrapper
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(user.bio), // Sanitize HTML before rendering
+            }}
+          />
 
           <SectionTitle>Publications</SectionTitle>
-          <List>
-            {Array.isArray(user.publications) &&
-            user.publications.length > 0 ? (
-              user.publications.map((publication, index) => (
-                <ListItem key={index}>{linkify(publication)}</ListItem>
-              ))
-            ) : (
-              <Paragraph>No publications available.</Paragraph>
-            )}
-          </List>
+          <PublicationsWrapper
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(user.publications),
+            }}
+          />
 
-          {/* <SectionTitle>Journals/Articles</SectionTitle>
-          <div
+          <SectionTitle>Creative Output - Journals/Articles</SectionTitle>
+          <PublicationsWrapper
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(user.journal),
             }}
-          ></div> */}
+          ></PublicationsWrapper>
 
           <SectionTitle>Links</SectionTitle>
           <List>

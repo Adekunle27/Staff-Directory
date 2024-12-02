@@ -35,6 +35,7 @@ const LecturerProfileForm = ({ existingData }) => {
     qualifications: "",
     specialization: "",
     journal: "",
+    category: "",
   });
 
   const facultyToDepartments = {
@@ -225,6 +226,17 @@ const LecturerProfileForm = ({ existingData }) => {
                 </option>
               ))}
           </Select>
+          <p>Staff Category</p>
+          <Select
+            name="category"
+            value={formData.category}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">Select Category</option>
+            <option value="Academic">Academic</option>
+            <option value="Non-Academic">Non-Academic</option>
+          </Select>
           <p>Rank/Status</p>
           <Select
             name="rank"
@@ -284,7 +296,7 @@ const LecturerProfileForm = ({ existingData }) => {
             theme="snow"
             style={{ height: "190px", marginBottom: "50px" }}
           />
-          <p>List of Journal/Articles/Conference Papers</p>
+          <p>Creative Output (List of Journal Articles/Conference Papers)</p>
           <ReactQuill
             value={formData.journal}
             onChange={(value) => handleQuillChange("journal", value)}

@@ -15,10 +15,12 @@ import AdminProfilePage from "./pages/AdminProfilePage";
 import CreateProfile from "./components/CreateProfile";
 import EditProfile from "./components/EditProfile";
 import PrivateAdminRoute from "./components/PrivateAdminRoute";
+import GlobalStyle from "./GlobalStyles";
 
 function App() {
   return (
     <>
+      <GlobalStyle />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
