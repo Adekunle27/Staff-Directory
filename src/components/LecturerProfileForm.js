@@ -109,7 +109,7 @@ const LecturerProfileForm = ({ existingData }) => {
         await setDoc(docRef, updatedData);
       }
 
-      alert("Profile submitted for approval");
+      alert("Your Profile has been saved successfully");
       navigate("/profile");
     } catch (error) {
       console.error("Error submitting profile:", error.message);

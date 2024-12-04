@@ -104,6 +104,7 @@ const StyledUserCard = styled.div`
   transition: transform 0.3s;
   color: #003366;
   max-height: 30rem;
+  min-height: 28rem;
 
   &:hover {
     transform: translateY(-5px);
@@ -112,6 +113,7 @@ const StyledUserCard = styled.div`
   img {
     width: 100%;
     max-height: 18.5rem;
+    min-height: 17.7rem;
     border-radius: 10px;
   }
 

@@ -4,6 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import DOMPurify from "dompurify";
+import { PublicationsWrapper } from "../components/styles";
 
 const Container = styled.div`
   max-width: 1200px;
@@ -259,17 +260,19 @@ const UserProfilePage = () => {
             }}
           ></div>
           <h3>Publications:</h3>
-          <div
+
+          <PublicationsWrapper
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(profileData.publications),
             }}
-          ></div>
+          />
+
           <h3>Journals & Articles:</h3>
-          <div
+          <PublicationsWrapper
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(profileData.journal),
             }}
-          ></div>
+          ></PublicationsWrapper>
           <h3>Research Profile(s):</h3>
           <ol>
             {profileData.links.map((link, index) => (
