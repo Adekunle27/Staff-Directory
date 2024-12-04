@@ -255,7 +255,6 @@ const ProfileImage = styled.img`
   max-width: 300px; /* Sets an upper limit for the size */
   height: auto;
   object-fit: cover;
-  border-radius: 50%;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   @media (max-width: 768px) {
     align-self: center;
