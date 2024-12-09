@@ -15,6 +15,7 @@ import InfoSection from "../components/InfoSection.js";
 import Footer from "../components/Footer.js";
 import styled from "styled-components";
 import SlickSlider from "react-slick";
+import { motion } from "framer-motion";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -143,14 +144,32 @@ const Home = () => {
       />
       <InfoSection users={users} />
       <Container>
-        {/* <PrincipalOfficers /> */}
-        <SectionTitle>Recently Added Staff</SectionTitle>
-        <SliderContainer>
+        <SectionTitle
+          as={motion.h2} // Adding Framer Motion animation
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          Recently Added Staff
+        </SectionTitle>
+        <SliderContainer
+          as={motion.div}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
           <Slider {...sliderSettings}>
             {recentStaffs.map((staff) => (
               <StaffCard
+                as={motion.div}
                 key={staff.id}
                 onClick={() => handleStaffClick(staff.id)}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
               >
                 <ProfileImage src={staff.image} alt={staff.name} />
                 <StaffInfo>
@@ -172,11 +191,25 @@ const Home = () => {
             ))}
           </Slider>
         </SliderContainer>
-        <FoundStaffText>Featured Staff</FoundStaffText>
+        <FoundStaffText
+          as={motion.div}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          Featured Staff
+        </FoundStaffText>
 
         <UserList users={filteredUsers} />
 
-        <GoToStaff>
+        <GoToStaff
+          as={motion.div}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
           Want to see all the Lecturers? Click{" "}
           <Link
             to="/staffs"

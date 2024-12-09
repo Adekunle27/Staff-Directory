@@ -6,6 +6,7 @@ import { FaPhoneVolume } from "react-icons/fa6";
 import { FaAtlassian } from "react-icons/fa6";
 import { FaAtom } from "react-icons/fa6";
 import { FaAnglesUp } from "react-icons/fa6";
+import { motion } from "framer-motion";
 
 const UserList = ({ search, users }) => {
   const filteredUsers = search
@@ -22,9 +23,22 @@ const UserList = ({ search, users }) => {
     : users;
 
   return (
-    <StyledUserList>
+    <StyledUserList
+      as={motion.div}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+    >
       {filteredUsers.map((user) => (
-        <StyledUserCard key={user.id}>
+        <StyledUserCard
+          as={motion.div}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          key={user.id}
+        >
           <StyledLink to={`/user/${user.id}`}>
             <img src={user.image} alt={user.name} />
             <div>

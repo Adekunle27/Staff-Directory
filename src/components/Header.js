@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import headerImage from "../images/headerimg.png";
+import { motion } from "framer-motion";
 
 const HeaderContainer = styled.header`
   background: url(${headerImage}) no-repeat center center/cover;
@@ -130,10 +131,38 @@ const Header = ({
   subheading = "Find staff by name, faculty, department and their rank", // Default subheading
 }) => {
   return (
-    <HeaderContainer>
-      <Heading>{heading}</Heading>
-      <Subheading>{subheading}</Subheading>
-      <SearchContainer>
+    <HeaderContainer
+      as={motion.header}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+    >
+      <Heading
+        as={motion.h1}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        {heading}
+      </Heading>
+      <Subheading
+        as={motion.p}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
+        {subheading}
+      </Subheading>
+      <SearchContainer
+        as={motion.div}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
         <Select
           onChange={(e) => setSelectedSearchOption(e.target.value)}
           value={selectedSearchOption}

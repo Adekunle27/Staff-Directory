@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import styled, { keyframes } from "styled-components";
 import Footer from "../components/Footer";
+import { motion } from "framer-motion";
 
 const UserDetailPageContainer = styled.div`
   padding: 2rem;
@@ -115,7 +116,13 @@ const UserDetailPage = () => {
 
   return (
     <>
-      <UserDetailPageContainer>
+      <UserDetailPageContainer
+        as={motion.div}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
         {user ? (
           <UserDetail user={user} relatedUsers={relatedUsers} />
         ) : (

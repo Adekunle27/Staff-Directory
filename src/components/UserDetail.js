@@ -14,6 +14,7 @@ import { PublicationsWrapper, QuillContentWrapper } from "./styles";
 import news from "../images/news.png";
 import events from "../images/events.png";
 import { TiPointOfInterest } from "react-icons/ti";
+import { motion } from "framer-motion";
 
 const linkify = (text) => {
   const urlPattern =
@@ -336,8 +337,20 @@ const ListItem = styled.li`
 
 const UserDetail = ({ user }) => {
   return (
-    <UserDetailContainer>
-      <Topstyle>
+    <UserDetailContainer
+      as={motion.div}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+    >
+      <Topstyle
+        as={motion.div}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
         <LeftSection>
           <ProfileImage src={user.image} alt={user.name} />
         </LeftSection>
@@ -443,30 +456,83 @@ const UserDetail = ({ user }) => {
           </Paragraph>
         </RightSectionTop>
       </Topstyle>
-      <AlignBoth>
+      <AlignBoth
+        as={motion.div}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
         <BottomSection>
-          <SectionTitle>Career Summary</SectionTitle>
+          <SectionTitle
+            as={motion.h3}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            Career Summary
+          </SectionTitle>
           <QuillContentWrapper
+            as={motion.div}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(user.bio), // Sanitize HTML before rendering
             }}
           />
 
-          <SectionTitle>Publications</SectionTitle>
+          <SectionTitle
+            as={motion.h3}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            Publications
+          </SectionTitle>
           <PublicationsWrapper
+            as={motion.div}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(user.publications),
             }}
           />
 
-          <SectionTitle>Creative Output - Journals/Articles</SectionTitle>
+          <SectionTitle
+            as={motion.h3}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            Creative Output - Journals/Articles
+          </SectionTitle>
           <PublicationsWrapper
+            as={motion.div}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(user.journal),
             }}
           ></PublicationsWrapper>
 
-          <SectionTitle>Links</SectionTitle>
+          <SectionTitle
+            as={motion.h3}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            Links
+          </SectionTitle>
           <List>
             {Array.isArray(user.links) && user.links.length > 0 ? (
               user.links.map((link, index) => (
