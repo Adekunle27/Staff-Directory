@@ -251,6 +251,9 @@ const UserProfilePage = () => {
             {profileData.specialization}
           </p>
           <p>
+            <strong>Research Interest:</strong> {profileData.interest}
+          </p>
+          <p>
             <strong>Office:</strong> {profileData.office}
           </p>
           <h3>Career Summary:</h3>

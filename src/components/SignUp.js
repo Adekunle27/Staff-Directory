@@ -39,7 +39,7 @@ const SignUp = () => {
         createdAt: serverTimestamp(), // Add createdAt timestamp here
       });
 
-      navigate("/profile");
+      navigate("/edit-profile");
       setError("");
     } catch (error) {
       setError("Failed to sign up. Please check your details and try again.");
@@ -89,7 +89,7 @@ const SignUp = () => {
         <Title>Sign Up</Title>
         <TitleInfo>Sign Up with your OAU Email Address here</TitleInfo>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        {/* <Input
+        <Input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -112,7 +112,7 @@ const SignUp = () => {
         />
         <Button type="submit" disabled={loading}>
           {loading ? <Loader className="loader" /> : "Sign Up"}
-        </Button> */}
+        </Button>
 
         <GoogleButton
           onClick={handleGoogleSignIn}

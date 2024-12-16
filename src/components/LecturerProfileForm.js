@@ -6,7 +6,6 @@ import {
   doc,
   setDoc,
   updateDoc,
-  deleteDoc,
   ref,
   uploadBytes,
   getDownloadURL,
@@ -34,27 +33,85 @@ const LecturerProfileForm = ({ existingData }) => {
     approved: false,
     qualifications: "",
     specialization: "",
+    researchInterests: "",
     journal: "",
     category: "",
   });
 
   const facultyToDepartments = {
     Technology: [
-      "Computer Science",
-      "Electrical Engineering",
+      "Food Science and Technology",
       "Mechanical Engineering",
+      "Agricultural and Environmental Engineering",
+      "Civil Engineering",
+      "Electronic and Electrical Engineering",
+      "Computer Science and Engineering",
+      "Material Science and Engineering",
+      "Chemical Engineering",
     ],
-    Science: ["Mathematics", "Physics", "Biology"],
-    "Clinical Science": ["Medicine", "Nursing", "Surgery"],
+    Science: [
+      "Biochemistry",
+      "Botany",
+      "Chemistry",
+      "Geology",
+      "Mathematics",
+      "Microbiology",
+      "Physics",
+      "Zoology",
+    ],
+    "Clinical Science": [
+      "Anaesthesia",
+      "Community Health and Nutrition",
+      "Dermatology and Venereology",
+      "Medicine",
+      "Mental Health",
+      "Obstetrics, Gynaecology and Perinatology",
+      "Ophthalmology",
+      "Orthopaedics and Traumatology",
+      "Paediatrics and Child Health",
+      "Radiology",
+    ],
     Pharmacy: ["Pharmacology", "Clinical Pharmacy"],
-    Law: ["Corporate Law", "Criminal Law"],
-    EDM: ["Architecture", "Estate Management"],
-    Agriculture: ["Crop Science", "Animal Science"],
-    Art: ["English", "History", "Philosophy"],
-    "Social Science": ["Economics", "Political Science", "Psychology"],
+    Law: ["Law"],
+    EDM: [
+      "Building",
+      "Architecture",
+      "Estate Management",
+      "Fine and Applied Arts",
+      "Quantity Surveying",
+      "Urban and Regional Planning",
+      "Surveying and Geoinformatics",
+    ],
+    Agriculture: [
+      "Agricultural Economics",
+      "Animal Sciences",
+      "Crop Production and Protection",
+      "Family Nutrition and Consumer Sciences",
+      "Plant Science",
+      "Soil Science",
+      "Agricultural Extension and Rural Development",
+    ],
+    Art: [
+      "History",
+      "Music",
+      "Linguistics and African Languages",
+      "Dramatic Arts",
+      "Philosophy",
+      "English",
+      "Religious Studies",
+    ],
+    "Social Science": [
+      "Demography and Social Statistics",
+      "Economics",
+      "Geography",
+      "Political Science",
+      "Psychology",
+      "Sociology and Anthropology",
+    ],
     Administration: [
-      "Accounting",
-      "Business Administration",
+      "International Relations",
+      "Local Government and Development Studies",
+      "Management and Accounting",
       "Public Administration",
     ],
   };
@@ -143,15 +200,15 @@ const LecturerProfileForm = ({ existingData }) => {
     }
   }, [currentUser]);
 
-  const handleDelete = async () => {
-    try {
-      await deleteDoc(doc(db, "users", currentUser.uid));
-      alert("Profile deleted");
-    } catch (error) {
-      console.error("Error deleting profile:", error);
-      alert("There was an error deleting your profile. Please try again.");
-    }
-  };
+  // const handleDelete = async () => {
+  //   try {
+  //     await deleteDoc(doc(db, "users", currentUser.uid));
+  //     alert("Profile deleted");
+  //   } catch (error) {
+  //     console.error("Error deleting profile:", error);
+  //     alert("There was an error deleting your profile. Please try again.");
+  //   }
+  // };
 
   return (
     <Container>
@@ -177,7 +234,7 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Enter your First name, then Last name"
             required
           />
-          <p>Email Address</p>
+          <p>Email Address (With your OAU Email Address)</p>
           <Input
             type="email"
             name="email"
@@ -234,10 +291,10 @@ const LecturerProfileForm = ({ existingData }) => {
             required
           >
             <option value="">Select Category</option>
-            <option value="Academic">Academic</option>
-            <option value="Non-Academic">Non-Academic</option>
+            <option value="Academic Staff">Academic Staff</option>
+            <option value="Non-Academic Staff">Non-Academic Staff</option>
           </Select>
-          <p>Rank/Status</p>
+          <p>Rank/Status/Level</p>
           <Select
             name="rank"
             value={formData.rank}
@@ -251,6 +308,9 @@ const LecturerProfileForm = ({ existingData }) => {
             <option value="Reader">Reader</option>
             <option value="Lecturer I">Lecturer I</option>
             <option value="Lecturer II">Lecturer II</option>
+            <option value="Graduate Assistant">Graduate Assistant</option>
+            <option value="Research Fellow">Research Fellow</option>
+            <option value="Others">Others</option>
           </Select>
           <p>Academic Qualifications</p>
           <Input
@@ -267,6 +327,14 @@ const LecturerProfileForm = ({ existingData }) => {
             name="specialization"
             value={formData.specialization}
             placeholder="Area(s) of Specialization"
+            onChange={handleInputChange}
+          />
+          <p>Research Interest</p>
+          <Input
+            type="text"
+            name="interest"
+            value={formData.researchInterests}
+            placeholder="Research Interest"
             onChange={handleInputChange}
           />
           <p>Office Address</p>
@@ -288,7 +356,7 @@ const LecturerProfileForm = ({ existingData }) => {
             theme="snow"
             style={{ height: "200px", marginBottom: "50px" }}
           />
-          <p>Publications (separate each publication with a new line)</p>
+          <p>Publications (You can make it an ordered or unordered list)</p>
           <ReactQuill
             value={formData.publications}
             onChange={(value) => handleQuillChange("publications", value)}
@@ -296,7 +364,9 @@ const LecturerProfileForm = ({ existingData }) => {
             theme="snow"
             style={{ height: "190px", marginBottom: "50px" }}
           />
-          <p>Creative Output (List of Journal Articles/Conference Papers)</p>
+          <p>
+            Creative Output (List of your Journal Articles/Conference Papers)
+          </p>
           <ReactQuill
             value={formData.journal}
             onChange={(value) => handleQuillChange("journal", value)}
@@ -305,7 +375,10 @@ const LecturerProfileForm = ({ existingData }) => {
             style={{ height: "190px", marginBottom: "50px" }}
           />
 
-          <p>Links (separate each of your links with a comma)</p>
+          <p>
+            Your Profile Links e.g. Google Scholar, Scopus(separate each link
+            with a comma e.g. scholar.com, scopus.com)
+          </p>
           <Textarea
             name="links"
             value={formData.links}
@@ -313,11 +386,6 @@ const LecturerProfileForm = ({ existingData }) => {
             placeholder="Links (comma-separated)"
           ></Textarea>
           <Button type="submit">Submit</Button>
-          {existingData && (
-            <Button type="button" onClick={handleDelete}>
-              Delete Profile
-            </Button>
-          )}
         </Form>
       </ProfileContainer>
     </Container>

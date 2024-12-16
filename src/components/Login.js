@@ -78,7 +78,7 @@ const Login = () => {
         <Title>Sign In</Title>
         <TitleInfo>Log in with your OAU Email Address here</TitleInfo>
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        {/* <Input
+        <Input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -94,7 +94,7 @@ const Login = () => {
         />
         <Button type="submit" disabled={loading}>
           {loading ? <Loader className="loader" /> : "Sign In"}
-        </Button> */}
+        </Button>
         <GoogleButton onClick={handleGoogleSignIn}>
           <img src={google} alt="Google Logo" />
           Sign in with Google
