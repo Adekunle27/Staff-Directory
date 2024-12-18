@@ -217,7 +217,7 @@ const UserProfilePage = () => {
           Edit your profile
         </Button>
         <div>
-          <Button onClick={handleDeleteProfile}>Delete your profile</Button>
+          {/* <Button onClick={handleDeleteProfile}>Delete your profile</Button> */}
           <Button onClick={handleLogout}>Logout</Button>
         </div>
       </AlignButton>
